@@ -24,4 +24,5 @@ class Payment(db.Model):
 	payment_status = db.Column(db.String(10), CheckConstraint(text(validate_status())))
 	payment_date_time = db.Column(db.DateTime, nullable=False, default=datetime.now())
 	amount = db.Column(db.Integer, default=0)
+	order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=True)
 	currency = db.Column(db.String(15), CheckConstraint(text(validate_currency())), nullable=False, default='Naira')

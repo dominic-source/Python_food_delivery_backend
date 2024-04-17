@@ -8,10 +8,7 @@ from flask_server import db
 @app_views.route('/', strict_slashes=False, methods=['GET', 'POST'])
 def user():
     """Test the user"""
-    user = User(username="chinonso", password_hash="fasofij", email="chinonsodomnic@gmail.com")
-    user.orders_buyer=[]
-    user.orders_dispatcher=[]
-    user.orders_seller=[]
+    user = User(username="Loveth", password_hash="fasofij", email="Loveth@gmail.com")
     db.session.add(user)
     db.session.commit()
-    return jsonify(user)
+    return jsonify({'username': user.username, 'date': user.created_at})

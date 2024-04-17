@@ -1,14 +1,24 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Enum
 import os
 from dotenv import load_dotenv
 # To Include migration for our database updates
 from flask_migrate import Migrate
 
+# import redis server
+from redis import Redis
+
+# integrate flask session
+from flask_session import Session
+
+# integrate password hashing
+from flask_bcrypt import Bcrypt
+
 # Create an instance of flask app
 app = Flask(__name__)
 
+# initialize bcrypt for password hashing
+bcrypt = Bcrypt(app)
 
 # Loads the environmental variable from the .env file
 load_dotenv()
@@ -28,6 +38,11 @@ app.config['SECRET'] = os.environ.get('SECRET_KEY')
 
 # Setup mysql server uri
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://{DELIVER_MYSQL_USER}:{DELIVER_MYSQL_PWD}@{DELIVER_MYSQL_HOST}:{DELIVER_MYSQL_PORT}/{DELIVER_MYSQL_DB}'
+
+# Session configuration
+app.config['SESSION_TYPE'] = 'redis'
+app.config['SESSION_REDIS'] = Redis(host='localhost', port=6379)
+Session(app)
 
 # Instantiate flask_sqlalchemy database
 db = SQLAlchemy(app)
