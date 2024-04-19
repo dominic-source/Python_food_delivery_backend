@@ -15,7 +15,7 @@ from flask_session import Session
 from flask_bcrypt import Bcrypt
 
 # Create an instance of flask app
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static', static_folder='static')
 
 # initialize bcrypt for password hashing
 bcrypt = Bcrypt(app)
@@ -52,6 +52,14 @@ migrate = Migrate(app, db)
 
 # Configure the file upload
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'uploads')
+
+# Limit the size of file upload
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
+
+# Create the upload folder if it doesn't exist
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
 
 def allowed_file(filename):
     return '.' in filename and \
