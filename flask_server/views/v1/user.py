@@ -34,10 +34,10 @@ def register():
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 photo = filename
-    user_check_email = db.session.query(User).filter_by(email=email).one()
+    user_check_email = db.session.query(User).filter_by(email=email).all()
     if user_check_email:
         return jsonify({'data': 'user already registered!'})
-    user_check_number = db.session.query(User).filter_by(phone_number=phone_number).one()
+    user_check_number = db.session.query(User).filter_by(phone_number=phone_number).all()
     if user_check_number:
         return jsonify({'data': 'Phone number is taken!'})
     password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
