@@ -17,3 +17,5 @@ class Product(db.Model):
 	category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 	photo = db.Column(db.String(30), nullable=True)
+	quantity = db.Column(db.Integer, nullable=False, default=0)
+

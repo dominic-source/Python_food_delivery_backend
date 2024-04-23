@@ -13,12 +13,15 @@ class StatusType(enum.Enum):
 	"""Ensure that users can only have this types of status"""
 	available = 'available'
 	busy = 'busy'
+	deleted = 'deleted'
 
 
 class User(db.Model):
 	"""This is the users class"""
 	__tablename__ = 'user'
 	id = db.Column(db.Integer, primary_key=True)
+	first_name = db.Column(db.String(100), nullable=False)
+	last_name = db.Column(db.String(100), nullable=False)
 	username = db.Column(db.String(30), nullable=False)
 	password_hash = db.Column(db.String(120), nullable=False)
 	reset_password_token = db.Column(db.String(120), nullable=True)
