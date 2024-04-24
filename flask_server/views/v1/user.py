@@ -50,6 +50,7 @@ def register():
     user_check_number = db.session.query(User).filter_by(phone_number=phone_number).all()
     if user_check_number:
         return jsonify({'data': 'Phone number is taken!'})
+    # hash password
     password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
     if lga_id:
         lga = db.session.query(Lga).filter_by(id=lga_id).all()
@@ -70,8 +71,7 @@ def register():
             password_hash=password_hash)
         db.session.add(user)
         db.session.commit()
-        return jsonify({'username': user.username, 'date': user.created_at, 'id': user.id}), 200
+        return jsonify({'username': user.username, 'date': user.created_at, 'id': user.id}), 201
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': str(e)}), 401
-    # return jsonify({'username': user.username, 'date': user.created_at, 'id': user.id}), 200
+        return jsonify({'error': str(e)}), 400
