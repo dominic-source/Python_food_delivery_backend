@@ -10,6 +10,9 @@ import os
 @app_views.route('/register', strict_slashes=False, methods=['POST'])
 def register():
     """register a user"""
+    if not request.content_type.startswith('multipart/form-data'):
+        return jsonify({'error': 'Invalid content type. Expected "multipart/form-data".'}), 403
+
     first_name = request.form.get('first_name')
     if not first_name:
         return jsonify({'data': 'first_name required!'}), 400

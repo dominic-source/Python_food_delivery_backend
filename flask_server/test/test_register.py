@@ -43,7 +43,7 @@ class TestUser(TestCase):
             headers = {'Content-Type': 'multipart/form-data'}
             response = self.client.post('/api/register', data=data2, headers=headers)
         data = response.json
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
         self.assertTrue('username' in data)
     
     def test_signup_v2(self):
@@ -66,5 +66,5 @@ class TestUser(TestCase):
             headers = {'Content-Type': 'multipart/form-data'}
             response = self.client.post('/api/register', data=data2, headers=headers)
         data = response.json
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 400)
         self.assertFalse('username' in data)
