@@ -6,13 +6,44 @@ from flask_server.models import User, Lga
 from flask_server import allowed_file, db, app, bcrypt
 from werkzeug.utils import secure_filename
 import os
+from flask_server.auth import auth
+from functools import wraps
+
+
+def multipart(func):
+    """Decorator that ensures a route has multipart content type"""
+    @wraps(func)
+    def decorated_func(*args, **kwargs):
+        if request.content_type and not request.content_type.startswith('multipart/form-data'):
+            return jsonify({'error': 'Invalid content type. Expected "multipart/form-data".'}), 403
+        return func(*args, **kwargs)
+    return decorated_func
+
+
+@app_views.route('/logout', methods=['GET'], strict_slashes=False)
+@multipart
+def logout_user():
+    """This endpoint is logs user in"""
+    if auth.logout_user():
+        return 'User logout successful', 200
+    else:
+        return 'unauthorized user', 401
+
+
+@app_views.route('/login', methods=['GET'], strict_slashes=False)
+@multipart
+def login_user():
+    """This endpoint is logs user in"""
+    if auth.login_user():
+        return 'User log in successful', 200
+    else:
+        return 'email or password incorrect', 401
+
 
 @app_views.route('/register', strict_slashes=False, methods=['POST'])
+@multipart
 def register():
     """register a user"""
-    if not request.content_type.startswith('multipart/form-data'):
-        return jsonify({'error': 'Invalid content type. Expected "multipart/form-data".'}), 403
-
     first_name = request.form.get('first_name')
     if not first_name:
         return jsonify({'data': 'first_name required!'}), 400
@@ -49,10 +80,10 @@ def register():
                 photo = filename
     user_check_email = db.session.query(User).filter_by(email=email).all()
     if user_check_email:
-        return jsonify({'data': 'user already registered!'})
+        return jsonify({'data': 'user already registered!'}), 403
     user_check_number = db.session.query(User).filter_by(phone_number=phone_number).all()
     if user_check_number:
-        return jsonify({'data': 'Phone number is taken!'})
+        return jsonify({'data': 'Phone number is taken!'}), 400
     # hash password
     password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
     if lga_id:

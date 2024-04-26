@@ -34,7 +34,7 @@ DELIVER_MYSQL_PORT = os.environ.get('DELIVER_MYSQL_PORT')
 # Set up secret key for signing sessions
 # import secrets
 # secrets.token_hex() will generate a new token
-app.config['SECRET'] = os.environ.get('SECRET_KEY')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 # Setup mysql server uri
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://{DELIVER_MYSQL_USER}:{DELIVER_MYSQL_PWD}@{DELIVER_MYSQL_HOST}:{DELIVER_MYSQL_PORT}/{DELIVER_MYSQL_DB}'

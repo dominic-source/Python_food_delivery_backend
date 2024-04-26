@@ -13,11 +13,13 @@ class Auth():
     models_major = ['User', 'Product', 'Payment', 'Order', 'OrderItem', 'Location']
     models_minor = ['Category', 'Lga', 'State', 'Country']
     
-    def login_user(self, username:str=None, password:str=None) -> bool:
+    def login_user(self) -> bool:
         """Login a user"""
-        if username is None or password is None or id is None:
+        email = request.form.get('email', None)
+        password = request.form.get('password', None)
+        if email is None or password is None:
             return False
-        user = db.session.query(User).filter_by(username=username).one()
+        user = db.session.query(User).filter_by(email=email).one()
         if not user:
             return False
         if bcrypt.check_password_hash(user.password_hash, password):
@@ -25,6 +27,7 @@ class Auth():
                 return True
             session['user_id'] = user.id
             return True
+        return False
     
     def logout_user(self) -> bool:
         """Logout a user"""
@@ -34,7 +37,7 @@ class Auth():
             except Exception:
                 return False
             return True
-        if not session.get('user_id', None):
+        elif not session.get('user_id', None):
             return True
 
     def is_authorized(self, model) -> bool:
@@ -57,6 +60,8 @@ class Auth():
     def forgot_password(self) -> str:
         """Helper function, to change a users password"""
         email = request.form.get('email')
+        if not email:
+            return ''
         expiry = datetime.datetime.now() + datetime.timedelta(days=1)
         user = db.session.query(User).filter_by(email=email).one()
         if not user:
@@ -83,3 +88,4 @@ class Auth():
         user.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
         db.session.commit()
         return True
+auth = Auth()
