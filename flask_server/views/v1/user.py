@@ -29,6 +29,15 @@ def logout_user():
     else:
         return 'unauthorized user', 401
 
+@app_views.route('/delete', methods=['GET'], strict_slashes=False)
+@multipart
+def delete_user():
+    """This endpoint is logs users out"""
+    if auth.logout_user():
+        return 'User logout successful', 200
+    else:
+        return 'unauthorized user', 401
+
 
 @app_views.route('/login', methods=['GET'], strict_slashes=False)
 @multipart
