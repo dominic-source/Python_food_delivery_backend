@@ -30,7 +30,7 @@ def protected_route(func):
     return protect
 
 
-@app_views.route('/updateUser', methods=['POST'], strict_slashes=False)
+@app_views.route('/update_user', methods=['POST'], strict_slashes=False)
 @multipart
 @protected_route
 def update_user():
@@ -53,7 +53,7 @@ def update_user():
             if val:
                 setattr(user, key, val)
         db.session.commit()
-        return 'user profile updated successfullly', 200
+        return jsonify({'data': 'user profile updated successfullly'}), 200
     except Exception:
         return jsonify({'error': 'An error occured!'}), 401
     
