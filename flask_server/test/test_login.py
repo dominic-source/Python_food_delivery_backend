@@ -42,7 +42,7 @@ class TestUser(TestCase):
 				'email': 'aymond@gmail.com',
 				'password': '112345'
 			}
-			response = self.client.get('/api/login', data=data3, headers=headers)
+			response = self.client.post('/api/login', data=data3, headers=headers)
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual('User log in successful', response.text)
 
@@ -64,7 +64,7 @@ class TestUser(TestCase):
 				'email': 'aymond@gmail.com',
 				'password': '112ds45'
 			}
-			response = self.client.get('/api/login', data=data3, headers=headers)
+			response = self.client.post('/api/login', data=data3, headers=headers)
 		self.assertEqual(response.status_code, 401)
 		self.assertEqual('email or password incorrect', response.text)
 
@@ -86,6 +86,6 @@ class TestUser(TestCase):
 				'email': 'aymond@gmail.com',
 				'password': '112345'
 			}
-			response = self.client.get('/api/login', data=data3, headers=headers)
+			response = self.client.post('/api/login', data=data3, headers=headers)
 		self.assertEqual(response.status_code, 403)
 		self.assertEqual('Invalid content type. Expected "multipart/form-data".', response.json['error'])

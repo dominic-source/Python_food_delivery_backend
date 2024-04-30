@@ -42,7 +42,7 @@ class TestUser(TestCase):
 				'email': 'aymond@gmail.com',
 				'password': '112345'
 			}
-			self.client.get('/api/login', data=data3, headers=headers)
+			self.client.post('/api/login', data=data3, headers=headers)
 			response = self.client.get('/api/logout')
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual('User logout successful', response.text)
@@ -66,6 +66,7 @@ class TestUser(TestCase):
 				'email': 'aymond@gmail.com',
 				'password': '112345'
 			}
+			self.client.post('/api/login', data=data3, headers=headers)
 			response = self.client.get('/api/logout')
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual('User logout successful', response.text)
@@ -73,5 +74,5 @@ class TestUser(TestCase):
 	def test_logout_user_not_registered(self):
 		with self.client:
 			response = self.client.get('/api/logout')
-		self.assertEqual(response.status_code, 200)
-		self.assertEqual('User logout successful', response.text)
+		self.assertEqual(response.status_code, 403)
+		self.assertEqual('An error occured, try to log in!', response.json['error'])

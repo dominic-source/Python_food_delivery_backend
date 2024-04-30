@@ -20,8 +20,47 @@ def multipart(func):
     return decorated_func
 
 
+def protected_route(func):
+    """Decorator that ensures a route is protected"""
+    @wraps(func)
+    def protect(*args, **kwargs):
+        if not auth.is_logged_in():
+            return jsonify({'error': 'An error occured, try to log in!'}), 403
+        return func(*args, **kwargs)
+    return protect
+
+
+@app_views.route('/updateUser', methods=['POST'], strict_slashes=False)
+@multipart
+@protected_route
+def update_user():
+    """This route is used to update users information """
+    obj = {
+        "first_name": request.form.get("first_name", None),
+        "last_name": request.form.get("last_name", None),
+        "username": request.form.get("username", None),
+        "email": request.form.get("email"),
+        "vehicle_number": request.form.get("vehicle_number"),
+        "user_type": request.form.get("user_type", None),
+        "lga_id": request.form.get("lga_id", None),
+        "phone_number": request.form.get("phone_number", None),
+        "status": request.form.get("status", None)
+    }
+    try:
+        user_id = session.get('user_id')
+        user = db.session.query(User).filter_by(id=user_id)
+        for key, val in obj.items():
+            if val:
+                setattr(user, key, val)
+        db.session.commit()
+        return 'user profile updated successfullly', 200
+    except Exception:
+        return jsonify({'error': 'An error occured!'}), 401
+    
+
 @app_views.route('/logout', methods=['GET'], strict_slashes=False)
 @multipart
+@protected_route
 def logout_user():
     """This endpoint is logs user in"""
     if auth.logout_user():
@@ -29,8 +68,10 @@ def logout_user():
     else:
         return 'unauthorized user', 401
 
+
 @app_views.route('/delete', methods=['GET'], strict_slashes=False)
 @multipart
+@protected_route
 def delete_user():
     """This endpoint is logs users out"""
     if auth.logout_user():
@@ -39,7 +80,7 @@ def delete_user():
         return 'unauthorized user', 401
 
 
-@app_views.route('/login', methods=['GET'], strict_slashes=False)
+@app_views.route('/login', methods=['POST'], strict_slashes=False)
 @multipart
 def login_user():
     """This endpoint is logs user in"""
