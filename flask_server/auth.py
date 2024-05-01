@@ -7,6 +7,8 @@ from flask_server import bcrypt, db
 from flask_server.models import User
 import uuid
 import datetime
+from flask_server.my_emails import mailSender
+import os
 
 class Auth():
     """The authentication class"""
@@ -57,35 +59,46 @@ class Auth():
             return True
         return False
 
-    def forgot_password(self) -> str:
+    def forgot_password(self) -> bool:
         """Helper function, to change a users password"""
         email = request.form.get('email')
         if not email:
-            return ''
+            return False
         expiry = datetime.datetime.now() + datetime.timedelta(days=1)
-        user = db.session.query(User).filter_by(email=email).one()
-        if not user:
-            return ''
-        token = str(uuid.uuid4()) + str(uuid.uuid4())
-        user.reset_password_token = token + '  ' + str(expiry)
-        db.session.commit()
-        return token
+        try:
+            user = db.session.query(User).filter_by(email=email).one()
+            if not user:
+                return False
+            token = str(uuid.uuid4()) + str(uuid.uuid4())
+            user.reset_password_token = token + '  ' + str(expiry)
+            db.session.commit()
+            message = token
+            mailSender(subj='password update', mess=message, sen="chinonsodomnic@gmail.com", rec=email, pas=None)
+            return token
+        except Exception:
+            db.session.rollback()
+            return False
+        
     
     def update_password(self) -> bool:
         """updates a users password"""
         token = request.form.get('token')
         email = request.form.get('email')
-        user = db.session.query(User).filter_by(email=email).one()
-        if not user:
+        try:
+            user = db.session.query(User).filter_by(email=email).one()
+            if not user:
+                return False
+            reset = user.reset_password_token.split('  ')
+            if reset[0] != token:
+                return False
+            expire = datetime.datetime.strptime(reset[1], '%Y-%m-%d %H:%M:%S.%f')
+            if expire < datetime.datetime.now():
+                return False
+            password = request.form.get('password')
+            user.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+            db.session.commit()
+            return True
+        except Exception:
+            db.session.rollback()
             return False
-        reset = user.reset_password_token.split('  ')
-        if reset[0] != token:
-            return False
-        expire = datetime.datetime.strptime(reset[1], '%Y-%m-%d %H:%M:%S.%f')
-        if expire < datetime.datetime.now():
-            return False
-        password = request.form.get('password')
-        user.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
-        db.session.commit()
-        return True
 auth = Auth()

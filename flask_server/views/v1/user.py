@@ -30,6 +30,27 @@ def protected_route(func):
     return protect
 
 
+@app_views.route('/update_password', methods=['POST'], strict_slashes=False)
+@multipart
+def update_password():
+    """This will update the password, when the user submits the token"""
+    if auth.update_password():
+        return jsonify({'success': 'password updated successfully'}), 201
+    else:
+        return jsonify({'error': 'An error occurred somewhere'}), 400
+
+
+@app_views.route('/forgot_password', methods=['POST'], strict_slashes=False)
+@multipart
+def forgot_password():
+    """When user forget their password, return a token that will expire in 5 min"""
+    token = auth.forgot_password()
+    if token:
+        return jsonify({"success": "A token was sent to your email!"}), 200
+    else:
+        return jsonify({"failure": "An error occurred!"}), 400
+        
+
 @app_views.route('/update_user', methods=['POST'], strict_slashes=False)
 @multipart
 @protected_route
@@ -55,6 +76,7 @@ def update_user():
         db.session.commit()
         return jsonify({'data': 'user profile updated successfullly'}), 200
     except Exception:
+        db.session.rollback()
         return jsonify({'error': 'An error occured!'}), 401
     
 
