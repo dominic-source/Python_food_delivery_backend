@@ -8,7 +8,8 @@ from werkzeug.utils import secure_filename
 import os
 from flask_server.auth import auth
 from functools import wraps
-
+from flask_server import queue
+import asyncio
 
 def multipart(func):
     """Decorator that ensures a route has multipart content type"""
@@ -32,7 +33,7 @@ def protected_route(func):
 
 @app_views.route('/update_password', methods=['POST'], strict_slashes=False)
 @multipart
-def update_password():
+async def update_password():
     """This will update the password, when the user submits the token"""
     if auth.update_password():
         return jsonify({'success': 'password updated successfully'}), 201
@@ -42,8 +43,8 @@ def update_password():
 
 @app_views.route('/forgot_password', methods=['POST'], strict_slashes=False)
 @multipart
-def forgot_password():
-    """When user forget their password, return a token that will expire in 5 min"""
+async def forgot_password():
+    """When user forget their password, return a token that will expire in 1 hr"""
     token = auth.forgot_password()
     if token:
         return jsonify({"success": "A token was sent to your email!"}), 200
@@ -54,7 +55,7 @@ def forgot_password():
 @app_views.route('/update_user', methods=['POST'], strict_slashes=False)
 @multipart
 @protected_route
-def update_user():
+async def update_user():
     """This route is used to update users information """
     obj = {
         "first_name": request.form.get("first_name", None),
@@ -83,7 +84,7 @@ def update_user():
 @app_views.route('/logout', methods=['GET'], strict_slashes=False)
 @multipart
 @protected_route
-def logout_user():
+async def logout_user():
     """This endpoint is logs user in"""
     if auth.logout_user():
         return 'User logout successful', 200
@@ -94,7 +95,7 @@ def logout_user():
 @app_views.route('/delete', methods=['GET'], strict_slashes=False)
 @multipart
 @protected_route
-def delete_user():
+async def delete_user():
     """This endpoint is logs users out"""
     if auth.logout_user():
         return 'User logout successful', 200
@@ -104,7 +105,7 @@ def delete_user():
 
 @app_views.route('/login', methods=['POST'], strict_slashes=False)
 @multipart
-def login_user():
+async def login_user():
     """This endpoint is logs user in"""
     if auth.login_user():
         return 'User log in successful', 200
@@ -114,7 +115,7 @@ def login_user():
 
 @app_views.route('/register', strict_slashes=False, methods=['POST'])
 @multipart
-def register():
+async def register():
     """register a user"""
     first_name = request.form.get('first_name')
     if not first_name:

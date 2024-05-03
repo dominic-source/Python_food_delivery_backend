@@ -3,11 +3,11 @@ This module is used to authenticate users, and also authorize
 users to be able to carryout some task
 """
 from flask import session, request
-from flask_server import bcrypt, db
+from flask_server import bcrypt, db, queue
 from flask_server.models import User
 import uuid
 import datetime
-from flask_server.email_client import mailSender
+# from flask_server.email_client import mailSender
 
 
 class Auth():
@@ -60,7 +60,8 @@ class Auth():
             user.reset_password_token = token + '  ' + str(expiry)
             db.session.commit()
             message = token
-            mailSender(subj='password update', mess=message, sen="chinonsodomnic@gmail.com", rec=email, pas=None)
+            queue.put({"subj":'password update', "mess":message, "sen":"chinonsodomnic@gmail.com", "rec":email, "pas":None})
+            # mailSender(subj='password update', mess=message, sen="chinonsodomnic@gmail.com", rec=email, pas=None)
             return token
         except Exception:
             db.session.rollback()

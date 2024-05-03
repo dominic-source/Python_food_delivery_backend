@@ -14,6 +14,9 @@ from flask_session import Session
 # integrate password hashing
 from flask_bcrypt import Bcrypt
 
+# Starts the Job processes
+import queue
+queue = queue.Queue()
 # Create an instance of flask app
 app = Flask(__name__, static_url_path='/static', static_folder='static')
 

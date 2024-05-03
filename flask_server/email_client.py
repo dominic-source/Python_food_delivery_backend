@@ -4,8 +4,10 @@ from time import sleep
 from dotenv import load_dotenv
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import asyncio
 
-def mailSender(subj=None, mess=None, addr="smtp.gmail.com", pas=None, 
+
+async def mailSender(subj=None, mess=None, addr="smtp.gmail.com", pas=None, 
                sen=None, rec=None, port=465):
     if (sen is None or rec is None):
         return
@@ -54,7 +56,7 @@ def mailSender(subj=None, mess=None, addr="smtp.gmail.com", pas=None,
         except Exception as e:
             print(f"error:{str(e)}")
             print("Please wait, retrying ...")
-            sleep(2)
+            await asyncio.sleep(2)
         else:
             print("mail sent!")
             if (server):
