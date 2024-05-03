@@ -7,14 +7,12 @@ from flask_server import bcrypt, db
 from flask_server.models import User
 import uuid
 import datetime
-from flask_server.my_emails import mailSender
-import os
+from flask_server.email_client import mailSender
+
 
 class Auth():
     """The authentication class"""
-    models_major = ['User', 'Product', 'Payment', 'Order', 'OrderItem', 'Location']
-    models_minor = ['Category', 'Lga', 'State', 'Country']
-    
+
     def login_user(self) -> bool:
         """Login a user"""
         email = request.form.get('email', None)
@@ -42,17 +40,6 @@ class Auth():
         elif not session.get('user_id', None):
             return True
 
-    def is_authorized(self, model) -> bool:
-        """Authorize a user to have certain abilities"""
-        if model not in Auth.models_major or model not in Auth.models_minor:
-            return False
-        if model in Auth.models_minor and (request.method == 'DELETE' or
-                               request.method == 'UPDATE' or
-                               request.method == 'PUT' or
-                               request.method == 'POST'):
-            return False
-        return True
-
     def is_logged_in(self):
         """Check if user is logged in"""
         if session.get('user_id', None):
@@ -64,7 +51,7 @@ class Auth():
         email = request.form.get('email')
         if not email:
             return False
-        expiry = datetime.datetime.now() + datetime.timedelta(days=1)
+        expiry = datetime.datetime.now() + datetime.timedelta(hours=1)
         try:
             user = db.session.query(User).filter_by(email=email).one()
             if not user:
@@ -78,8 +65,7 @@ class Auth():
         except Exception:
             db.session.rollback()
             return False
-        
-    
+
     def update_password(self) -> bool:
         """updates a users password"""
         token = request.form.get('token')

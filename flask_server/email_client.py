@@ -28,16 +28,16 @@ def mailSender(subj=None, mess=None, addr="smtp.gmail.com", pas=None,
     if mess is None:
         mess = " Software engineering is good, but also has some disadvantage."
     # message.attach(MIMEText(mess, "plain"))
-
+    url = "https://provisionspall-hwvs.onrender.com/dashboard"
     html_content = f"""<html>
 <body>
     <h1 style="color: blue;">Delivery - Business Application</h1>
     <br>
     <p>Copy this token and paste it in the
-        <a href="https://provisionspall-hwvs.onrender.com/dashboard"> reset password page </a></p>
+        <a href={url}> reset password page </a></p>
     <code>{mess}</code>
     <h1>OR</h1>
-    <p>Directly update your password <a href="https://provisionspall-hwvs.onrender.com/dashboard?token{mess}"> here</a>.</p>
+    <p>Directly update your password <a href="{url}?token={mess}"> here</a>.</p>
 </body>
 </html>
 """
