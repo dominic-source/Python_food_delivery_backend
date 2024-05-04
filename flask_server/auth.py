@@ -3,7 +3,8 @@ This module is used to authenticate users, and also authorize
 users to be able to carryout some task
 """
 from flask import session, request
-from flask_server import bcrypt, db, queue
+from flask_server import bcrypt, db
+from flask_server.app import queue
 from flask_server.models import User
 import uuid
 import datetime

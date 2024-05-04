@@ -8,15 +8,15 @@ from werkzeug.utils import secure_filename
 import os
 from flask_server.auth import auth
 from functools import wraps
-from flask_server import queue
-import asyncio
+
 
 def multipart(func):
     """Decorator that ensures a route has multipart content type"""
     @wraps(func)
     def decorated_func(*args, **kwargs):
-        if request.content_type and not request.content_type.startswith('multipart/form-data'):
-            return jsonify({'error': 'Invalid content type. Expected "multipart/form-data".'}), 403
+        # if request.content_type and not request.content_type.startswith('application/json'):
+        # if request.content_type and not request.content_type.startswith('multipart/form-data'):
+        #     return jsonify({'error': 'Invalid content type. Expected "multipart/form-data".'}), 403
         return func(*args, **kwargs)
     return decorated_func
 
@@ -32,8 +32,7 @@ def protected_route(func):
 
 
 @app_views.route('/update_password', methods=['POST'], strict_slashes=False)
-@multipart
-async def update_password():
+def update_password():
     """This will update the password, when the user submits the token"""
     if auth.update_password():
         return jsonify({'success': 'password updated successfully'}), 201
@@ -42,8 +41,7 @@ async def update_password():
 
 
 @app_views.route('/forgot_password', methods=['POST'], strict_slashes=False)
-@multipart
-async def forgot_password():
+def forgot_password():
     """When user forget their password, return a token that will expire in 1 hr"""
     token = auth.forgot_password()
     if token:
@@ -53,9 +51,8 @@ async def forgot_password():
         
 
 @app_views.route('/update_user', methods=['POST'], strict_slashes=False)
-@multipart
 @protected_route
-async def update_user():
+def update_user():
     """This route is used to update users information """
     obj = {
         "first_name": request.form.get("first_name", None),
@@ -82,9 +79,8 @@ async def update_user():
     
 
 @app_views.route('/logout', methods=['GET'], strict_slashes=False)
-@multipart
 @protected_route
-async def logout_user():
+def logout_user():
     """This endpoint is logs user in"""
     if auth.logout_user():
         return 'User logout successful', 200
@@ -93,9 +89,8 @@ async def logout_user():
 
 
 @app_views.route('/delete', methods=['GET'], strict_slashes=False)
-@multipart
 @protected_route
-async def delete_user():
+def delete_user():
     """This endpoint is logs users out"""
     if auth.logout_user():
         return 'User logout successful', 200
@@ -104,8 +99,7 @@ async def delete_user():
 
 
 @app_views.route('/login', methods=['POST'], strict_slashes=False)
-@multipart
-async def login_user():
+def login_user():
     """This endpoint is logs user in"""
     if auth.login_user():
         return 'User log in successful', 200
@@ -114,8 +108,7 @@ async def login_user():
 
 
 @app_views.route('/register', strict_slashes=False, methods=['POST'])
-@multipart
-async def register():
+def register():
     """register a user"""
     first_name = request.form.get('first_name')
     if not first_name:
