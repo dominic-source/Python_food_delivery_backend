@@ -6,8 +6,8 @@ from flask_server.models import User, Lga
 from flask_server import allowed_file, db, app, bcrypt
 from werkzeug.utils import secure_filename
 import os
-from flask_server.auth import auth
 from functools import wraps
+from flask_server.app import auth
 
 
 def multipart(func):

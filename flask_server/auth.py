@@ -4,10 +4,11 @@ users to be able to carryout some task
 """
 from flask import session, request
 from flask_server import bcrypt, db
-from flask_server.app import queue
 from flask_server.models import User
 import uuid
 import datetime
+from flask_server.app import app
+import json
 # from flask_server.email_client import mailSender
 
 
@@ -61,10 +62,22 @@ class Auth():
             user.reset_password_token = token + '  ' + str(expiry)
             db.session.commit()
             message = token
-            queue.put({"subj":'password update', "mess":message, "sen":"chinonsodomnic@gmail.com", "rec":email, "pas":None})
+            redis = app.config['SESSION_REDIS']
+            user_data = {
+                        "id": user.id,
+                        "subj":'password update',
+                         "mess":message,
+                         "sen":"chinonsodomnic@gmail.com", 
+                         "rec":email, 
+                         "pas":None
+                         }
+            data = json.dumps(user_data)
+            redis.rpush('user_data_queue', data)
+
             # mailSender(subj='password update', mess=message, sen="chinonsodomnic@gmail.com", rec=email, pas=None)
             return token
-        except Exception:
+        except Exception as e:
+            print(e)
             db.session.rollback()
             return False
 
@@ -89,4 +102,3 @@ class Auth():
         except Exception:
             db.session.rollback()
             return False
-auth = Auth()
