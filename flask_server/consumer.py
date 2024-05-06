@@ -17,7 +17,6 @@ async def main():
         # Block and pop a message from the queue
         data = r.blpop('user_data_queue')
         data = data[1].decode('utf-8')
-        print(data)
         if data:
             logging.info("Received task from queue")
             # Process the data (remove quotes from `b'...'`)

@@ -4,8 +4,22 @@ from time import sleep
 from dotenv import load_dotenv
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import asyncio
+from tenacity import retry, stop_after_attempt, after_log
+import logging
 
+logging.basicConfig(filename='consumer.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
+logger = logging.getLogger(__name__)
+
+
+@retry(stop=stop_after_attempt(3), after=after_log(logger, logging.DEBUG))
+async def send_mail(sen, pas, addr, port, rec, message):
+    """This wiill send the mail"""
+    server = smtplib.SMTP_SSL(addr, port)
+    server.login(sen, pas)
+    server.sendmail(sen, rec, message)
+    server.quit()
+    
 
 async def mailSender(id=None, subj=None, mess=None, addr="smtp.gmail.com", pas=None, 
                sen=None, rec=None, port=465):
@@ -45,27 +59,4 @@ async def mailSender(id=None, subj=None, mess=None, addr="smtp.gmail.com", pas=N
 """
     message.attach(MIMEText(html_content, "html"))
 
-    while (x < 7):
-        # loop 7 times until mail is sent the mail
-        
-        try:
-            # create the server
-            server = smtplib.SMTP_SSL(addr, port)
-            server.login(sen, pas)
-            server.sendmail(sen, rec, message.as_string())
-        except Exception as e:
-            print(f"error:{str(e)}")
-            print("Please wait, retrying ...")
-            await asyncio.sleep(2)
-        else:
-            print("mail sent!")
-            if (server):
-                server.quit()
-            break
-        finally:
-            print("Success 😎")
-        x += 1
-
-# test me
-if __name__ == '__main__':
-    mailSender(sen="chinonsodomnic@gmail.com", rec="dominicmorba@gmail.com", pas=None)
+    await send_mail(sen, pas, addr, port, rec, message.as_string())
