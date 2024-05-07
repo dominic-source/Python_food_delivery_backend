@@ -9,7 +9,11 @@ import uuid
 import datetime
 from flask_server.app import app
 import json
-# from flask_server.email_client import mailSender
+import logging
+
+logger = logging.getLogger(__name__)
+# Configure logging
+logging.basicConfig(filename='consumer.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class Auth():
@@ -37,6 +41,7 @@ class Auth():
             try:
                 session.pop('user_id')
             except Exception:
+                logger.info('An invalid user attempted to logout')
                 return False
             return True
         elif not session.get('user_id', None):
@@ -77,7 +82,7 @@ class Auth():
             # mailSender(subj='password update', mess=message, sen="chinonsodomnic@gmail.com", rec=email, pas=None)
             return token
         except Exception as e:
-            print(e)
+            logger.error("Error occured:", exc_info=True)
             db.session.rollback()
             return False
 
@@ -100,5 +105,6 @@ class Auth():
             db.session.commit()
             return True
         except Exception:
+            logger.error("Error occured:", exc_info=True)
             db.session.rollback()
             return False

@@ -8,17 +8,11 @@ from werkzeug.utils import secure_filename
 import os
 from functools import wraps
 from flask_server.app import auth
+import logging
 
-
-def multipart(func):
-    """Decorator that ensures a route has multipart content type"""
-    @wraps(func)
-    def decorated_func(*args, **kwargs):
-        # if request.content_type and not request.content_type.startswith('application/json'):
-        # if request.content_type and not request.content_type.startswith('multipart/form-data'):
-        #     return jsonify({'error': 'Invalid content type. Expected "multipart/form-data".'}), 403
-        return func(*args, **kwargs)
-    return decorated_func
+logger = logging.getLogger(__name__)
+# Configure logging
+logging.basicConfig(filename='consumer.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def protected_route(func):
@@ -54,18 +48,18 @@ def forgot_password():
 @protected_route
 def update_user():
     """This route is used to update users information """
-    obj = {
-        "first_name": request.form.get("first_name", None),
-        "last_name": request.form.get("last_name", None),
-        "username": request.form.get("username", None),
-        "email": request.form.get("email"),
-        "vehicle_number": request.form.get("vehicle_number"),
-        "user_type": request.form.get("user_type", None),
-        "lga_id": request.form.get("lga_id", None),
-        "phone_number": request.form.get("phone_number", None),
-        "status": request.form.get("status", None)
-    }
     try:
+        obj = {
+            "first_name": request.form.get("first_name", None),
+            "last_name": request.form.get("last_name", None),
+            "username": request.form.get("username", None),
+            "email": request.form.get("email"),
+            "vehicle_number": request.form.get("vehicle_number"),
+            "user_type": request.form.get("user_type", None),
+            "lga_id": request.form.get("lga_id", None),
+            "phone_number": request.form.get("phone_number", None),
+            "status": request.form.get("status", None)
+        }
         user_id = session.get('user_id')
         user = db.session.query(User).filter_by(id=user_id)
         for key, val in obj.items():
@@ -74,6 +68,7 @@ def update_user():
         db.session.commit()
         return jsonify({'data': 'user profile updated successfullly'}), 200
     except Exception:
+        logger.error("Error occured:", exc_info=True)
         db.session.rollback()
         return jsonify({'error': 'An error occured!'}), 401
     
@@ -173,5 +168,6 @@ def register():
         db.session.commit()
         return jsonify({'username': user.username, 'date': user.created_at, 'id': user.id}), 201
     except Exception as e:
+        logger.error("Error occured:", exc_info=True)
         db.session.rollback()
         return jsonify({'error': str(e)}), 400
