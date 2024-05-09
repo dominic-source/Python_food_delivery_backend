@@ -1,28 +1,12 @@
 """ This module is used to login in user for authentication purposes
 """
-from flask_server.views.v1 import app_views
+from flask_server.views.v1 import app_views, protected_route, logger
 from flask import request, jsonify, make_response, session
 from flask_server.models import User, Lga
-from flask_server import allowed_file, db, app, bcrypt
+from flask_server import allowed_file, db, app, bcrypt, auth
 from werkzeug.utils import secure_filename
 import os
-from functools import wraps
-from flask_server.app import auth
-import logging
-
-logger = logging.getLogger(__name__)
-# Configure logging
-logging.basicConfig(filename='consumer.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-
-def protected_route(func):
-    """Decorator that ensures a route is protected"""
-    @wraps(func)
-    def protect(*args, **kwargs):
-        if not auth.is_logged_in():
-            return jsonify({'error': 'An error occured, try to log in!'}), 403
-        return func(*args, **kwargs)
-    return protect
+# from flask_server.app import auth
 
 
 @app_views.route('/update_password', methods=['POST'], strict_slashes=False)
@@ -67,7 +51,7 @@ def update_user():
                 setattr(user, key, val)
         db.session.commit()
         return jsonify({'data': 'user profile updated successfullly'}), 200
-    except Exception:
+    except Exception as e:
         logger.error("Error occured:", exc_info=True)
         db.session.rollback()
         return jsonify({'error': 'An error occured!'}), 401

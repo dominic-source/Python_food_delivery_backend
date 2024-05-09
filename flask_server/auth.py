@@ -3,17 +3,13 @@ This module is used to authenticate users, and also authorize
 users to be able to carryout some task
 """
 from flask import session, request
-from flask_server import bcrypt, db
+from flask_server import bcrypt, db, app
 from flask_server.models import User
 import uuid
 import datetime
-from flask_server.app import app
+# from flask_server.app import app
 import json
-import logging
-
-logger = logging.getLogger(__name__)
-# Configure logging
-logging.basicConfig(filename='consumer.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+from flask_server.views.v1 import logger
 
 
 class Auth():

@@ -5,6 +5,10 @@ from dotenv import load_dotenv
 # To Include migration for our database updates
 from flask_migrate import Migrate
 
+from flask_server.auth import Auth
+# Initialize authentication setup for view functions
+auth = Auth()
+
 # import redis server
 from redis import Redis
 
@@ -64,3 +68,6 @@ if not os.path.exists(app.config['UPLOAD_FOLDER']):
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+with app.app_context():
+	db.create_all()
