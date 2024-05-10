@@ -1,8 +1,7 @@
 import unittest
 from flask_testing import TestCase
 from flask import Flask
-# from ..app import db
-from ...flask_server.app import app_views, db
+from .. import app_views, db
 import os
 
 class TestUser(TestCase):
@@ -24,7 +23,7 @@ class TestUser(TestCase):
 			db.session.remove()
 			db.drop_all()
 
-	def test_login_user(self):
+	def test_create_category(self):
 		with self.client:
 			data2 = {
 			'first_name': 'Loveth',
@@ -48,4 +47,83 @@ class TestUser(TestCase):
             }
 			response = self.client.post('/api/category', data=data4)
 		self.assertEqual(response.status_code, 200)
-		# self.assertEqual('User log in successful', response.text)
+
+	def test_get_category(self):
+		with self.client:
+			data2 = {
+			'first_name': 'Loveth',
+			'last_name': 'Ubah',
+			'username': 'sdominic',
+			'vehicle_number': 'sRaymond',
+			'email': 'aymond@gmail.com',
+			'password': '112345',
+			'phone_number': '233455632',
+			'status': 'busy',
+			}
+			headers = {'Content-Type': 'multipart/form-data'}
+			self.client.post('/api/register', data=data2, headers=headers)
+			data3 = {
+				'email': 'aymond@gmail.com',
+				'password': '112345'
+			}
+			self.client.post('/api/login', data=data3, headers=headers)
+			data4 = {
+                'name': 'Consumable Products | Food & Beverages | Staples (Rice, Flour, Pasta)'
+            }
+			data = self.client.post('/api/category', data=data4)
+			response = self.client.get(f"/api/category/{data.json['id']}")
+		self.assertEqual(response.status_code, 200)
+
+	def test_all_category(self):
+		with self.client:
+			data2 = {
+			'first_name': 'Loveth',
+			'last_name': 'Ubah',
+			'username': 'sdominic',
+			'vehicle_number': 'sRaymond',
+			'email': 'aymond@gmail.com',
+			'password': '112345',
+			'phone_number': '233455632',
+			'status': 'busy',
+			}
+			headers = {'Content-Type': 'multipart/form-data'}
+			self.client.post('/api/register', data=data2, headers=headers)
+			data3 = {
+				'email': 'aymond@gmail.com',
+				'password': '112345'
+			}
+			self.client.post('/api/login', data=data3, headers=headers)
+			data4 = {
+                'name': 'Consumable Products | Food & Beverages | Staples (Rice, Flour, Pasta)'
+            }
+			self.client.post('/api/category', data=data4)
+			resp = self.client.post('/api/category', data=data4)
+			self.assertEqual(resp.status_code, 401)
+			response = self.client.get("/api/categories")
+		self.assertEqual(response.status_code, 200)
+
+	def test_delete_category(self):
+		with self.client:
+			data2 = {
+			'first_name': 'Loveth',
+			'last_name': 'Ubah',
+			'username': 'sdominic',
+			'vehicle_number': 'sRaymond',
+			'email': 'aymond@gmail.com',
+			'password': '112345',
+			'phone_number': '233455632',
+			'status': 'busy',
+			}
+			headers = {'Content-Type': 'multipart/form-data'}
+			self.client.post('/api/register', data=data2, headers=headers)
+			data3 = {
+				'email': 'aymond@gmail.com',
+				'password': '112345'
+			}
+			self.client.post('/api/login', data=data3, headers=headers)
+			data4 = {
+                'name': 'Consumable Products | Food & Beverages | Staples (Rice, Flour, Pasta)'
+            }
+			resp = self.client.post('/api/category', data=data4)
+			response = self.client.delete(f"/api/category/{resp.json['id']}")
+		self.assertEqual(response.status_code, 200)
