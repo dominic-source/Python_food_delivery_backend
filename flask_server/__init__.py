@@ -5,10 +5,6 @@ from dotenv import load_dotenv
 # To Include migration for our database updates
 from flask_migrate import Migrate
 
-from flask_server.auth import Auth
-# Initialize authentication setup for view functions
-auth = Auth()
-
 # import redis server
 from redis import Redis
 
@@ -57,6 +53,7 @@ migrate = Migrate(app, db)
 # Configure the file upload
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'uploads')
+UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
 
 # Limit the size of file upload
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
@@ -71,3 +68,6 @@ def allowed_file(filename):
 
 with app.app_context():
 	db.create_all()
+
+# Import the app views
+from flask_server.views.v1 import app_views

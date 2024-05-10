@@ -3,10 +3,10 @@
 from flask_server.views.v1 import app_views, protected_route, logger
 from flask import request, jsonify, make_response, session
 from flask_server.models import User, Lga
-from flask_server import allowed_file, db, app, bcrypt, auth
+from flask_server import allowed_file, db, UPLOAD_FOLDER, bcrypt
+from flask_server.app import auth
 from werkzeug.utils import secure_filename
 import os
-# from flask_server.app import auth
 
 
 @app_views.route('/update_password', methods=['POST'], strict_slashes=False)
@@ -121,7 +121,7 @@ def register():
         if file.filename:
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                file.save(os.path.join(UPLOAD_FOLDER, filename))
                 photo = filename
     user_check_email = db.session.query(User).filter_by(email=email).all()
     if user_check_email:

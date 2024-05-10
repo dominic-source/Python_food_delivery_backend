@@ -5,19 +5,37 @@ from flask import request, jsonify, make_response, session
 from flask_server.models import Category
 from flask_server import db
 
+@app_views.route('/category/<id>', methods=['DELETE'], strict_slashes=False)
+@protected_route
+def delete_category(id=None):
+    """This endpoint will delete a category"""
+    try:
+        if not id:
+            return jsonify({'error': 'An error occured!'}), 401
+        category = db.session.query(Category).filter_by(id=id).first()
+        if not category:
+            return jsonify({'error': 'An error occured!'}), 401
+        db.session.delete(category)
+        db.session.commit()
+        return jsonify({'success': 'Successfully delete the category!'})
+    except Exception as e:
+        db.session.rollback()
+        logger.error("Error occured:", exc_info=True)
+        return jsonify({'error': 'An error occured!'}), 401
 
-@app_views.route('category', methods=['POST'], strict_slashes=False)
+
+@app_views.route('/category', methods=['POST'], strict_slashes=False)
 @protected_route
 def create_category():
     """This endpoint creates a category"""
     try:
-        category_name = request.form.get('name', None)
-        if not category_name:
+        name = request.form.get('name', None)
+        if not name:
             return ({'error': 'Category name must be indicated'})
-        category = Category(category_name=category_name)
+        category = Category(name=name)
         db.session.add(category)
         db.session.commit()
-        return jsonify({'success': category.category_name + ' ' + category.id}), 200
+        return jsonify({'name': category.name, 'id': category.id}), 200
     except Exception as e:
         db.session.rollback()
         logger.error("Error occured:", exc_info=True)
@@ -31,10 +49,11 @@ def all_categories():
     try:
         if id is None:
             return jsonify({'error': 'An error occured!'}), 401
-        category = db.session.query(Category).all()
-        if not category:
+        categories = db.session.query(Category).all()
+        if not categories:
             return jsonify({'success': 'No category was found'}), 401
-        return jsonify(category), 200
+        category_data = [{'id':category.id, 'name': category.name} for category in categories]
+        return jsonify(category_data), 200
     except Exception as e:
         db.session.rollback()
         logger.error("Error occured:", exc_info=True)
@@ -51,9 +70,10 @@ def get_category(id=None):
         category = db.session.query(Category).filter_by(id=id).one()
         if not category:
             return jsonify({'success': 'The category was not found'}), 401
-        return jsonify(category), 200
-
+        category_data = {'name': category.name, 'id': category.id}
+        return jsonify(category_data), 200
     except Exception as e:
         db.session.rollback()
         logger.error("Error occured:", exc_info=True)
+        print(e)
         return jsonify({'error': 'An error occured!'}), 401
