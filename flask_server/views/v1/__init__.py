@@ -24,3 +24,4 @@ def protected_route(func):
 app_views = Blueprint('app_views', __name__, url_prefix='/api')
 from flask_server.views.v1.user import *
 from flask_server.views.v1.category import *
+from flask_server.views.v1.product import *
