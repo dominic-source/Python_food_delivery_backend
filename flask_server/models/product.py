@@ -8,7 +8,7 @@ class Product(db.Model):
 	"""This is the users class"""
 	__tablename__ = 'product'
 	id = db.Column(db.Integer, primary_key=True)
-	product_name = db.Column(db.String(35), nullable=False)
+	name = db.Column(db.String(35), nullable=False)
 	description = db.Column(db.String(120), nullable=True)
 	created_at = db.Column(db.DateTime, nullable=False, default=datetime.now())
 	updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now())
