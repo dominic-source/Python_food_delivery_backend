@@ -34,7 +34,8 @@ class User(db.Model):
 	user_type = db.Column(Enum(UserType), nullable=False, default=UserType.buyer)
 	status = db.Column(Enum(StatusType), nullable=False, default=StatusType.busy)
 	photo = db.Column(db.String(70), nullable=True)
-	products = db.relationship('Product', backref='owner', cascade='all, delete-orphan')
+	products = db.relationship('Product', backref='owner',
+                            foreign_keys='Product.user_id', cascade='all, delete-orphan')
 	orders_seller = db.relationship('Order', backref='seller',
 								 foreign_keys='Order.seller_id', cascade='all, delete-orphan')
 	orders_buyer = db.relationship('Order', backref='buyer',
