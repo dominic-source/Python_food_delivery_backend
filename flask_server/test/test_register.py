@@ -1,7 +1,7 @@
 import unittest
 from flask_testing import TestCase
 from flask import Flask
-from ..app import db
+from .. import db
 from ..views.v1 import app_views
 import io
 

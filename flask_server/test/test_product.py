@@ -1,7 +1,9 @@
 import unittest
 from flask_testing import TestCase
 from flask import Flask
-from .. import app_views, db
+from .. import db
+from ..views.v1 import app_views
+
 import os
 
 class TestUser(TestCase):

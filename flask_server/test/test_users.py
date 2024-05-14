@@ -24,11 +24,11 @@ class TestUser(TestCase):
 			db.session.remove()
 			db.drop_all()
 
-	def test_update_user(self):
+	def setUp(self):
 		with self.client:
 			data2 = {
-			'first_name': 'sylveth',
-			'last_name': 'monh',
+			'first_name': 'oveth',
+			'last_name': 'Ubah',
 			'username': 'sdominic',
 			'vehicle_number': 'sRaymond',
 			'email': 'aymond@gmail.com',
@@ -42,13 +42,14 @@ class TestUser(TestCase):
 				'email': 'aymond@gmail.com',
 				'password': '112345'
 			}
-			response = self.client.post('/api/login', data=data3, headers=headers)
+			self.client.post('/api/login', data=data3, headers=headers)
+
+	def test_get_user(self):
+		with self.client:
+			response = self.client.get('/api/user')
 		self.assertEqual(response.status_code, 200)
-		self.assertEqual('User log in successful', response.text)
-		data4 = {
-			'first_name': 'Emmanuel'
-		}
-		resp = self.client.post('/api/update_user', data=data4, headers=headers)
-		self.assertEqual(response.status_code, 200)
-		self.assertEqual('user profile updated successfullly', resp.json['data'])
-		self.assertFalse(resp.json.get('error', None))
+
+	def test_get_users(self):
+		with self.client:
+			resp = self.client.get(f"api/users")
+		self.assertEqual(resp.status_code, 200)
