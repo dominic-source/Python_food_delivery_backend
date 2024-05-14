@@ -4,9 +4,53 @@ from flask_server.views.v1 import app_views, protected_route, logger
 from flask import request, jsonify, make_response, session
 from flask_server.models import User, Lga
 from flask_server import allowed_file, db, UPLOAD_FOLDER, bcrypt
-from flask_server.app import auth
+from flask_server.auth import auth
 from werkzeug.utils import secure_filename
 import os
+
+
+@app_views.route('/user', methods=['GET'], strict_slashes=False)
+@protected_route
+def get_user():
+    """This endpoint will return the user basic information"""
+    try:
+        user = User.query.filter_by(id=session.get('user_id')).one()
+        user_data = {
+                'username': user.username,
+                'first name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'phone number': user.phone_number,
+                'vehicle number': user.vehicle_number,
+                'user_type': user.user_type.value,
+                'photo': user.photo,
+                'status': user.status.value,
+                'created_at': user.created_at,
+                'updated_at': user.updated_at
+            }
+        return jsonify(user_data), 200
+    except Exception as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({'error': 'An error occurred somewhere'}), 400
+
+
+@app_views.route('/users', methods=['GET'], strict_slashes=False)
+@protected_route
+def get_users():
+    """This endpoint retrieves all user of the software"""
+    try:
+        users = User.query.all()
+        users_data = [{
+                'username': user.username,
+                'first name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email
+            } for user in users]
+        return jsonify(users_data), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'An error occurred somewhere'}), 400
 
 
 @app_views.route('/update_password', methods=['POST'], strict_slashes=False)
