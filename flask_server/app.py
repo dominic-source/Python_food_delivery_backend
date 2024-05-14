@@ -4,9 +4,9 @@ from asgiref.wsgi import WsgiToAsgi
 # Import the app views
 from flask_server.views.v1 import app_views
 
-from flask_server.auth import Auth
-# Initialize authentication setup for view functions
-auth = Auth()
+# from flask_server.auth import Auth
+# # Initialize authentication setup for view functions
+# auth = Auth()
 
 @app.errorhandler(404)
 def page_not_found():

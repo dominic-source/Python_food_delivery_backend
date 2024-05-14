@@ -3,11 +3,10 @@ This module is used to authenticate users, and also authorize
 users to be able to carryout some task
 """
 from flask import session, request
-from flask_server import bcrypt, db, app
+from flask_server import bcrypt, db, REDIS
 from flask_server.models import User
 import uuid
 import datetime
-# from flask_server.app import app
 import json
 from flask_server.views.v1 import logger
 
@@ -63,7 +62,7 @@ class Auth():
             user.reset_password_token = token + '  ' + str(expiry)
             db.session.commit()
             message = token
-            redis = app.config['SESSION_REDIS']
+            redis = REDIS
             user_data = {
                         "id": user.id,
                         "subj":'password update',
@@ -104,3 +103,4 @@ class Auth():
             logger.error("Error occured:", exc_info=True)
             db.session.rollback()
             return False
+auth = Auth()

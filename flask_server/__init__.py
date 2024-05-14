@@ -42,6 +42,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://{DELIVER_MYSQL_USER}:{DELIVER_
 # Session configuration
 app.config['SESSION_TYPE'] = 'redis'
 app.config['SESSION_REDIS'] = Redis(host='localhost', port=6379)
+REDIS = app.config['SESSION_REDIS']
 Session(app)
 
 # Instantiate flask_sqlalchemy database
@@ -68,6 +69,3 @@ def allowed_file(filename):
 
 with app.app_context():
 	db.create_all()
-
-# Import the app views
-from flask_server.views.v1 import app_views
