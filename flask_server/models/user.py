@@ -32,7 +32,7 @@ class User(db.Model):
 	lga_id = db.Column(db.Integer,  db.ForeignKey('lga.id'), nullable=True)
 	vehicle_number = db.Column(db.String(30), nullable=True)
 	user_type = db.Column(Enum(UserType), nullable=False, default=UserType.buyer)
-	status = db.Column(Enum(StatusType), nullable=False, default=StatusType.busy)
+	status = db.Column(Enum(StatusType), nullable=False, default=StatusType.available)
 	photo = db.Column(db.String(70), nullable=True)
 	products = db.relationship('Product', backref='owner',
                             foreign_keys='Product.user_id', cascade='all, delete-orphan')
@@ -45,4 +45,3 @@ class User(db.Model):
 	address_seller_id = db.Column(db.Integer, db.ForeignKey('location.id'), nullable=True)
 	address_buyer_id = db.Column(db.Integer, db.ForeignKey('location.id'), nullable=True)
 	address_dispatcher_id = db.Column(db.Integer, db.ForeignKey('location.id'), nullable=True)
-
