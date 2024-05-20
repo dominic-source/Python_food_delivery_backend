@@ -30,9 +30,9 @@ class TestUser(TestCase):
 			data2 = {
 			'first_name': 'oveth',
 			'last_name': 'Ubah',
-			'username': 'sdominic',
+			'username': 'admin',
 			'vehicle_number': 'sRaymond',
-			'email': 'aymond@gmail.com',
+			'email': 'admin@deliver.com',
 			'password': '112345',
 			'phone_number': '233455632',
 			'status': 'busy',
@@ -40,7 +40,7 @@ class TestUser(TestCase):
 			headers = {'Content-Type': 'multipart/form-data'}
 			self.client.post('/api/register', data=data2, headers=headers)
 			data3 = {
-				'email': 'aymond@gmail.com',
+				'email': 'admin@deliver.com',
 				'password': '112345'
 			}
 			self.client.post('/api/login', data=data3, headers=headers)
@@ -82,3 +82,98 @@ class TestUser(TestCase):
 			resp = self.client.post(f"api/order", headers=header, json=json.dumps(data))
 			self.assertEqual(resp.status_code, 201)
 		
+	def test_get_order(self):
+		"""This tests the get_order views"""
+		data = {
+                'seller_id': 1,
+                'dispatcher_id': 1,
+                'delivery_address': 'myaddress',
+                'orderitems': [
+                    {
+                        'product_id': 1,
+                        'quantity': 2
+                    },
+                    {
+                        'product_id': 1,
+                        'quantity': 3
+                    }
+                ]
+            }
+		header = {'Content-Type': 'application/json'}
+		self.client.post(f"api/order", headers=header, json=json.dumps(data))
+		self.client.post(f"api/order", headers=header, json=json.dumps(data))
+		resp = self.client.post(f"api/order", headers=header, json=json.dumps(data))
+		# id = resp.json['order_id']
+		response = self.client.get('/api/my_orders?seller=true')
+		self.assertEqual(response.status_code, 200)
+
+	def test_all_order(self):
+		"""This tests the get_order views"""
+		data = {
+                'seller_id': 1,
+                'dispatcher_id': 1,
+                'delivery_address': 'myaddress',
+                'orderitems': [
+                    {
+                        'product_id': 1,
+                        'quantity': 2
+                    },
+                    {
+                        'product_id': 1,
+                        'quantity': 3
+                    }
+                ]
+            }
+		header = {'Content-Type': 'application/json'}
+		self.client.post(f"api/order", headers=header, json=json.dumps(data))
+		self.client.post(f"api/order", headers=header, json=json.dumps(data))
+		response = self.client.get('/api/all_orders')
+		self.assertEqual(response.status_code, 200)
+
+	def test_get_all_items_of_order(self):
+		"""This tests the get_order views"""
+		data = {
+                'seller_id': 1,
+                'dispatcher_id': 1,
+                'delivery_address': 'myaddress',
+                'orderitems': [
+                    {
+                        'product_id': 1,
+                        'quantity': 2
+                    },
+                    {
+                        'product_id': 1,
+                        'quantity': 3
+                    }
+                ]
+            }
+		header = {'Content-Type': 'application/json'}
+		self.client.post(f"api/order", headers=header, json=json.dumps(data))
+		self.client.post(f"api/order", headers=header, json=json.dumps(data))
+		resp = self.client.post(f"api/order", headers=header, json=json.dumps(data))
+		response = self.client.get(f"/api/order_items/{resp.json['order_id']}")
+		self.assertEqual(response.status_code, 200)
+
+	def test_get_all_items_of_order_with_errors(self):
+		"""This tests the get_order views"""
+		data = {
+                'seller_id': 1,
+                'dispatcher_id': 1,
+                'delivery_address': 'myaddress',
+                'orderitems': [
+                    {
+                        'product_id': 1,
+                        'quantity': 2
+                    },
+                    {
+                        'product_id': 1,
+                        'quantity': 3
+                    }
+                ]
+            }
+		header = {'Content-Type': 'application/json'}
+		self.client.post(f"api/order", headers=header, json=json.dumps(data))
+		self.client.post(f"api/order", headers=header, json=json.dumps(data))
+		resp = self.client.post(f"api/order", headers=header)
+		response = self.client.get(f"/api/order_items/{resp.json.get('order_id')}")
+		self.assertEqual(response.status_code, 404)
