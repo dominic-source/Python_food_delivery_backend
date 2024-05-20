@@ -9,26 +9,42 @@ import uuid
 import datetime
 import json
 from flask_server.views.v1 import logger
+# from sqlalchemy.orm.exc import NoResultFound
 
 
 class Auth():
     """The authentication class"""
 
+    def is_admin(self) -> bool:
+        """Confirms if the user is an administrator"""
+        user_id = session.get('user_id', None)
+        if not user_id:
+            return False
+        try:
+            user = User.query.filter_by(id=user_id).one()
+            if user.username != 'admin' or user.email != 'admin@deliver.com':
+                return False
+            return True
+        except Exception as e:
+            return False
+
     def login_user(self) -> bool:
         """Login a user"""
         email = request.form.get('email', None)
         password = request.form.get('password', None)
-        if email is None or password is None:
-            return False
-        user = db.session.query(User).filter_by(email=email).one()
-        if not user:
-            return False
-        if bcrypt.check_password_hash(user.password_hash, password):
-            if session.get('user_id', None):
+        try:
+            if email is None or password is None:
+                return False
+            user = db.session.query(User).filter_by(email=email).first()
+            if not user:
+                return False
+            if bcrypt.check_password_hash(user.password_hash, password):
+                if session.get('user_id', None):
+                    return True
+                session['user_id'] = user.id
                 return True
-            session['user_id'] = user.id
-            return True
-        return False
+        except Exception as e:
+            return False
     
     def logout_user(self) -> bool:
         """Logout a user"""
