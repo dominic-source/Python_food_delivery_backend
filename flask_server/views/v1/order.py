@@ -5,8 +5,74 @@ from flask_server.views.v1 import app_views, protected_route, logger, admin_rout
 from flask import request, jsonify, make_response, session
 from flask_server.models import Product, Category, User, Order, OrderItem
 from flask_server import db
-from datetime import datetime
+import datetime
 from sqlalchemy.orm.exc import NoResultFound
+
+
+@app_views.route('/order/<int:id>', methods=['DELETE'], strict_slashes=False)
+@protected_route
+def delete_order(id=None):
+    """Delete an order"""
+    try:
+        user_id = session.get('user_id')
+        if not id:
+            return jsonify({'message': 'order id required'}), 401
+        order = Order.query.filter_by(id=id).first()
+        if not order:
+            return jsonify({'message': 'order not found!'}), 401
+        if not (order.buyer_id == user_id or order.seller_id == user_id):
+            return jsonify({'message': 'you are not the buyer or seller in the transaction'}), 401
+        if order.payment and order.payment.payment_status == 'paid':
+            return jsonify({'message': 'order has been paid!'}), 401
+        if order.payment and order.payment.payment_status == 'inprocess':
+            if order.payment.last_update_time > (datetime.datetime.now() - datetime.timedelta(minutes=60)):
+                return jsonify({'message': 'order in process of payment!'}), 401
+        db.session.delete(order)
+        db.session.commit()
+        return jsonify({'message': 'order deleted successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        logger.error("Error occurred:", exc_info=True)
+        return jsonify({'error': 'An error occurred!'}), 401
+
+
+@app_views.route('/order', methods=['PUT'], strict_slashes=False)
+@protected_route
+def update_order_address():
+    """This endpoint updates an orders address
+
+    endpoint: /order
+        You can only update an order if you are the buyer in the transaction
+    
+    Request content-type: form/encoded
+
+    Request body:
+        order_id (int, mandatory): The ID of the order to update.
+        delivery_address: The delivery address of the order.
+
+    Returns:
+        JSON: A JSON response containing a message of success or failure
+    """
+    try:
+        user_id = session.get('user_id')
+        order_id = request.form.get('order_id')
+        delivery_address = request.form.get('delivery_address')
+        if not order_id:
+            return jsonify({'error': 'order id required'}), 401
+        order = Order.query.filter_by(id=order_id).first()
+        if not order:
+            return jsonify({'error': 'order not found!'}), 401
+        if order.buyer_id != user_id:
+            return jsonify({'error': 'you are not the buyer in the transaction'}), 401
+        if delivery_address:
+            order.delivery_address = delivery_address
+            order.last_update_time = datetime.datetime.now()
+        db.session.commit()
+        return jsonify({'message': 'order updated successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        logger.error("Error occured:", exc_info=True)
+        return jsonify({'error': 'An error occured!'}), 401
 
 
 @app_views.route('/order_items/<id>', methods=['GET'], strict_slashes=False)
