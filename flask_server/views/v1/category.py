@@ -1,12 +1,13 @@
 """ This module is used for to manage the categories
 """
-from flask_server.views.v1 import app_views, protected_route, logger
+from flask_server.views.v1 import admin_route, app_views, protected_route, logger
 from flask import request, jsonify, make_response, session
 from flask_server.models import Category
 from flask_server import db
 
 
 @app_views.route('/category/<id>', methods=['DELETE'], strict_slashes=False)
+@admin_route
 @protected_route
 def delete_category(id=None):
     """This endpoint will delete a category"""
@@ -26,6 +27,7 @@ def delete_category(id=None):
 
 
 @app_views.route('/category', methods=['POST'], strict_slashes=False)
+@admin_route
 @protected_route
 def create_category():
     """This endpoint creates a category"""
