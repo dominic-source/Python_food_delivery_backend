@@ -1,6 +1,6 @@
 """ This module is used to login in user for authentication purposes
 """
-from flask_server.views.v1 import app_views, protected_route, logger
+from flask_server.views.v1 import admin_route, app_views, protected_route, logger
 from flask import request, jsonify, make_response, session
 from flask_server.models import User, Lga
 from flask_server import allowed_file, db, UPLOAD_FOLDER, bcrypt
@@ -36,6 +36,7 @@ def get_user():
 
 
 @app_views.route('/users', methods=['GET'], strict_slashes=False)
+@admin_route
 @protected_route
 def get_users():
     """This endpoint retrieves all user of the software"""
