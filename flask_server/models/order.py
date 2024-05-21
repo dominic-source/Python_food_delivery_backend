@@ -23,4 +23,3 @@ class Order(db.Model):
 	status = db.Column(db.String(15), CheckConstraint(text(validate_status())), default='pending')
 	payment = db.relationship("Payment", backref='order', uselist=False)
 	orderitems = db.relationship('OrderItem', backref='order', cascade='all, delete-orphan')
-	payment_token = db.Column(db.String(120), nullable=True)
