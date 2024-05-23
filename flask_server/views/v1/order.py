@@ -8,6 +8,87 @@ from flask_server import db
 import datetime
 from sqlalchemy.orm.exc import NoResultFound
 
+@app_views.route('/order/<int:order_id>', methods=['PUT'], strict_slashes=False)
+@protected_route
+def update_order_items(order_id=None):
+    """This endpoint deletes an order item from an order.
+    """
+    try:
+        user_id = session.get('user_id')
+        if not order_id:
+            return jsonify({'message': 'order id required!'}), 401
+
+        if request.is_json is False:
+            return jsonify({'error': 'This route requires you use json'}), 401
+        request_data = json.loads(request.json)
+        orderitems = request_data.get('orderitems')
+        order = Order.query.filter_by(id=order_id).first()
+        if not order:
+            return jsonify({'message': 'order not found!'}), 401
+        if not (order.buyer_id == user_id or order.seller_id == user_id):
+            return jsonify({'message': 'you are not the buyer or seller in the transaction!'}), 401
+        if order.payment and order.payment.payment_status == 'paid':
+            return jsonify({'message': 'order has been paid!'}), 401
+
+        for data in orderitems:
+            item_id = data.get('id')
+            orderitem = OrderItem.query.filter_by(id=item_id).first()
+            if not orderitem:
+                return jsonify({'message': 'order item not found!'}), 401
+            if order_id != orderitem.order_id:
+                return jsonify({'message': 'order item not found!'}), 401
+            quantity = data.get('quantity')
+            orderitem.quantity = quantity
+
+        # Update the order total amount
+        total_amount = 0
+        for item in order.orderitems:
+            product = Product.query.filter_by(id=item.product_id).first()
+            total_amount += item.quantity * product.price
+        order.total_amount = total_amount
+        db.session.commit()
+        return jsonify({'message': 'order item was updated successfully!'}), 200
+    except Exception as e:
+        db.session.rollback()
+        logger.error("Error occurred:", exc_info=True)
+        return jsonify({'error': 'An error occurred!'}), 401
+
+
+@app_views.route('/order/<int:order_id>/<int:orderitem_id>', methods=['DELETE'], strict_slashes=False)
+@protected_route
+def delete_an_order_item(order_id=None, orderitem_id=None):
+    """This endpoint deletes an order item from an order.
+    """
+    try:
+        user_id = session.get('user_id')
+        if not order_id:
+            return jsonify({'message': 'order id required!'}), 401
+        if not orderitem_id:
+            return jsonify({'message': 'order item id required!'}), 401
+        order = Order.query.filter_by(id=order_id).first()
+        if not order:
+            return jsonify({'message': 'order not found!'}), 401
+        if not (order.buyer_id == user_id or order.seller_id == user_id):
+            return jsonify({'message': 'you are not the buyer or seller in the transaction!'}), 401
+        if order.payment and order.payment.payment_status == 'paid':
+            return jsonify({'message': 'order has been paid!'}), 401
+        if order.payment and order.payment.payment_status == 'inprocess':
+            if order.payment.last_update_time > (datetime.datetime.now() - datetime.timedelta(minutes=60)):
+                return jsonify({'message': 'order in process of payment!'}), 401
+        orderitem = OrderItem.query.filter_by(id=orderitem_id).first()
+        if not orderitem:
+            return jsonify({'message': 'order item not found!'}), 401
+        if orderitem.order_id != order_id:
+            return jsonify({'message': 'order item not found!'}), 401
+
+        db.session.delete(orderitem)
+        db.session.commit()
+        return jsonify({'message': 'order item was deleted successfully!'}), 200
+    except Exception as e:
+        db.session.rollback()
+        logger.error("Error occurred:", exc_info=True)
+        return jsonify({'error': 'An error occurred!'}), 401
+
 
 @app_views.route('/order/<int:id>', methods=['DELETE'], strict_slashes=False)
 @protected_route
