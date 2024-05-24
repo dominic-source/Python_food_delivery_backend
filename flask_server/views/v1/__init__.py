@@ -52,3 +52,4 @@ from flask_server.views.v1.user import *
 from flask_server.views.v1.category import *
 from flask_server.views.v1.product import *
 from flask_server.views.v1.order import *
+from flask_server.views.v1.payment import *
