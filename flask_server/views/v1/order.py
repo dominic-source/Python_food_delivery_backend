@@ -12,6 +12,19 @@ from sqlalchemy.orm.exc import NoResultFound
 @protected_route
 def update_order_items(order_id=None):
     """This endpoint deletes an order item from an order.
+    Here is the format for the json input: 
+        data = {
+                'orderitems': [
+                    {
+                        'id': 1,
+                        'quantity': 40
+                    },
+                    {
+                        'id': 2,
+                        'quantity': 10
+                    }
+                ]
+            }
     """
     try:
         user_id = session.get('user_id')
@@ -218,7 +231,7 @@ def get_all_order():
         return jsonify({'error': 'An error occured!'}), 401
 
 
-@app_views.route('my_orders', methods=['GET'], strict_slashes=False)
+@app_views.route('/my_orders', methods=['GET'], strict_slashes=False)
 @protected_route
 def get_my_orders():
     """This route returns all the users order as a buyer and/or seller and/or dispatcher
@@ -235,10 +248,10 @@ def get_my_orders():
     data = {}
     try:
         id = session.get('user_id')
-        if seller.lower() == 'true':
+        if buyer.lower() == 'true':
             order_b = Order.query.filter_by(buyer_id=id).all()
             data['buyer'] =  generate_orders(order_b)
-        if buyer.lower() == 'true':
+        if seller.lower() == 'true':
             order_s = Order.query.filter_by(seller_id=id).all()
             data['seller'] =  generate_orders(order_s)
         if dispatcher.lower() == 'true':
