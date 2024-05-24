@@ -95,11 +95,42 @@ class TestDeleteAndUpdateOrder(TestCase):
             db.session.remove()
             db.drop_all()
 
+    def test_delete_order_item(self):
+        with self.client:
+            response = self.client.delete('/api/order/1/1')
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json, {'message': 'order item was deleted successfully!'})
+            resp = self.client.get('/api/order_items/1')
+            self.assertEqual(resp.status_code, 200)
+
+    def test_update_order_item(self):
+        with self.client:
+            data = {
+                'orderitems': [
+                    {
+                        'id': 1,
+                        'quantity': 40
+                    },
+                    {
+                        'id': 2,
+                        'quantity': 10
+                    }
+                ]
+            }
+            response = self.client.put('/api/order/1', json=json.dumps(data))
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json, {'message': 'order item was updated successfully!'})
+            resp = self.client.get('/api/my_orders?seller=false&buyer=true&dispatcher=false')
+            total_amount = resp.json['buyer'][0]['total_amount']
+            resp = self.client.get("api/product/1")
+            price = resp.json['price']
+            total_quantity_of_items = 50
+            self.assertEqual(total_amount, price*total_quantity_of_items)
+
     def test_delete_order_success(self):
         with self.client:
             response = self.client.delete('/api/order/1')
             self.assertEqual(response.status_code, 200)
-            print(response.json)
             self.assertEqual(response.json, {'message': 'order deleted successfully'})
 
     def test_delete_order_not_found(self):
