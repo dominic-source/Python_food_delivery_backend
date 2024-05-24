@@ -23,12 +23,12 @@ def get_my_payments(order_id=None):
         if not payments:
             return jsonify({'message': 'No payment was found!'}), 401
         transaction = [{
-            'id': payment.id,
-            'currency': payment.currency,
-            'payment_method': payment.payment_method,
-            'payment_status': payment.payment_status,
-            'date': payment.last_update_time,
-            'amount': payment.total_amount if query.seller_id == user_id or
+            'Id': payment.id,
+            'Currency': payment.currency,
+            'Payment_method': payment.payment_method,
+            'Payment_status': payment.payment_status,
+            'Date': payment.last_update_time,
+            'Amount': payment.total_amount if query.seller_id == user_id or
                                                 query.buyer_id == user_id else payment.dispatcher_amount
             } for payment in payments]            
         return jsonify(transaction), 200
