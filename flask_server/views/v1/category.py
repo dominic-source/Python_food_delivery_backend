@@ -13,7 +13,7 @@ def delete_category(id=None):
     """This endpoint will delete a category"""
     try:
         if not id:
-            return jsonify({'error': 'An error occured!'}), 401
+            return jsonify({'error': 'Category Id is required!'}), 401
         category = db.session.query(Category).filter_by(id=id).first()
         if not category:
             return jsonify({'error': 'An error occured!'}), 401
