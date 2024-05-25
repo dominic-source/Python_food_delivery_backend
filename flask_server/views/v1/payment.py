@@ -1,9 +1,41 @@
 """ This module is used for to manage the categories
 """
-from flask_server.views.v1 import admin_route, app_views, protected_route, logger
+from flask_server.views.v1 import app_views, protected_route, logger
 from flask import request, jsonify, make_response, session
 from flask_server.models import Order, Payment
 from flask_server import db
+
+
+@app_views.route('/payment', methods=['POST'], strict_slashes=False)
+@protected_route
+def create_payment():
+    """This endpoint will delete a category"""
+    try:
+        payment_method = request.form.get('payment_method', None)
+        seller_amount = request.form.get('seller_amount', None)
+        dispatcher_amount = request.form.get('dispatcher_amount', None)
+        currency = request.form.get('currency', None)
+        order_id = request.form.get('order_id', None)
+
+        user_id=session.get('user_id')
+        order = Order.query.filter_by(id=order_id).one()
+        if order.buyer_id != user_id:
+            return jsonify({'message': 'You are not the buyer!'});
+            
+        payment = Payment(payment_method=payment_method,
+                         seller_amount=seller_amount,
+                         dispatcher_amount=dispatcher_amount,
+                         currency=currency,
+                         order_id=order_id
+                         )
+        order.payment.append(payment)
+        db.session.add(payment)
+        db.session.commit()
+        return jsonify({'message': 'Payment has been created successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        logger.error("Error occured:", exc_info=True)
+        return jsonify({'error': 'An error occured!'}), 401
 
 
 @app_views.route('/payments/<int:order_id>', methods=['GET'], strict_slashes=False)
