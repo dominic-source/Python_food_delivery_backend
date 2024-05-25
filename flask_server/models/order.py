@@ -21,5 +21,5 @@ class Order(db.Model):
 	delivery_address = db.Column(db.String(120), nullable=False)
 	total_amount = db.Column(db.Integer, nullable=False, default=0)
 	status = db.Column(db.String(15), CheckConstraint(text(validate_status())), default='pending')
-	payment = db.relationship("Payment", backref='order', uselist=False)
+	payment = db.relationship("Payment", backref='order', cascade='all, delete-orphan')
 	orderitems = db.relationship('OrderItem', backref='order', cascade='all, delete-orphan')
