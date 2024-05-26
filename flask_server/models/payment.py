@@ -23,7 +23,7 @@ class Payment(db.Model):
 	payment_method = db.Column(db.String(10), CheckConstraint(text(validate_payment_method())), defaut='transfer')
 	seller_payment_status = db.Column(db.String(10), CheckConstraint(text(validate_status())), default='unpaid')
 	dispatcher_payment_status = db.Column(db.String(10), CheckConstraint(text(validate_status())), default='unpaid')	
-	payment_date_time = db.Column(db.DateTime, nullable=False, default=datetime.now())
+	payment_date_time = db.Column(db.DateTime, nullable=True)
 	last_update_time = db.Column(db.DateTime, nullable=False, default=datetime.now())
 	seller_amount = db.Column(db.Integer, default=0)
 	dispatcher_amount = db.Column(db.Integer, default=0)
