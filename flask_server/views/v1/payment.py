@@ -4,6 +4,47 @@ from flask_server.views.v1 import app_views, protected_route, logger
 from flask import request, jsonify, make_response, session
 from flask_server.models import Order, Payment
 from flask_server import db
+from datetime import datetime
+
+
+@app_views.route('/payment/<int:id>', methods=['PUT'], strict_slashes=False)
+@protected_route
+def update_payment(id=None):
+    """"This endpoint will update the payment"""
+    try:
+        if not id:
+            return jsonify({'error': 'Payment Id is required!'}), 401
+        seller_payment_status = request.form.get('seller_payment_status', None)
+        dispatcher_payment_status = request.form.get('dispatcher_payment_status', None)
+        if (not seller_payment_status) and (not dispatcher_payment_status):
+            return jsonify({'error': 'Payment status is required!'}), 401
+        payment = Payment.query.filter_by(id=id).one()
+        order_id = payment.order_id
+        user_id = session.get('user_id')
+        order = Order.query.filter_by(id=order_id).one()
+        if order.seller_id == user_id:
+            payment.seller_payment_status = seller_payment_status
+        elif order.dispatcher_id == user_id:
+            payment.dispatcher_payment_status = dispatcher_payment_status
+        else:
+            return jsonify({'message': 'You are not the seller!'})
+        if payment.seller_payment_status == 'paid' and payment.dispatcher_payment_status == 'paid':
+            order.status = 'completed'
+        elif payment.seller_payment_status == 'inprocess' or payment.dispatcher_payment_status == 'inprocess':
+            order.status = 'incomplete'
+        else:
+            return jsonify({'message': 'Payment status is not correct!'})        
+        
+        payment.payment_date_time = datetime.now()
+        payment.last_update_time = datetime.now()
+        
+        db.session.commit()
+        return jsonify({'message': 'Payment has been updated successfully'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        logger.error("Error occured:", exc_info=True)
+        return jsonify({'error': 'An error occured!'}), 401
 
 
 @app_views.route('/payment', methods=['POST'], strict_slashes=False)
@@ -68,4 +109,3 @@ def get_my_payments(order_id=None):
         db.session.rollback()
         logger.error("Error occured:", exc_info=True)
         return jsonify({'error': 'An error occured!'}), 401
-
