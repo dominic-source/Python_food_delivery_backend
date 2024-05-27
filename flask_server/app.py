@@ -22,4 +22,4 @@ if __name__ == '__main__':
 
     # Run the Flask app
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=5000)
+    uvicorn.run(app, host="127.0.0.2", port=5000)
