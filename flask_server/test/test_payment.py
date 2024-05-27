@@ -2,10 +2,10 @@ import unittest
 from flask_testing import TestCase
 from flask import Flask
 from .. import db
-from ..models import Payment
 from ..views.v1 import app_views
 import json
 import os
+
 
 class TestUser(TestCase):
 	"""This class is meant to test cases that has to do with the user"""
@@ -79,17 +79,40 @@ class TestUser(TestCase):
             }
 			header = {'Content-Type': 'application/json'}
 			self.client.post(f"api/order", headers=header, json=json.dumps(data))
-			payment = Payment(payment_method='cash',
-                     payment_status='paid',
-                     seller_amount=100,
-                     dispatcher_amount=400,
-                     total_amount=90,
-                     order_id=1)
-			db.session.commit()
-   
+			data = {
+				"payment_method": "cash",
+				"seller_amount": 100,
+				"dispatcher_amount": 400,
+				"order_id": 1,
+				"currency": "Naira"
+			}
+			resp = self.client.post('/api/payment', data=data)
+
+	def test_create_payments(self):
+		with self.client:
+			data = {
+				"payment_method": "cash",
+				"seller_amount": 100,
+				"dispatcher_amount": 400,
+				"order_id": 1,
+				"currency": "Naira"
+			}
+			resp = self.client.post('/api/payment', data=data)
+			self.assertEqual(resp.status_code, 200)
+
+	def test_update_payments(self):
+		with self.client:
+			data = {
+				"status": "paid"
+			}
+			resp = self.client.put('/api/payment/1', data=data)
+			self.assertEqual(resp.status_code, 200)
 
 	def test_get_payments(self):
 		with self.client:
+			data = {
+				"status": "paid"
+			}
+			self.client.put('/api/payment/1', data=data)
 			resp = self.client.get('/api/payments/1')
 			self.assertEqual(resp.status_code, 200)
-			print(resp.json)
