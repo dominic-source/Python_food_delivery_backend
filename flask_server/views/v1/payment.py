@@ -14,26 +14,24 @@ def update_payment(id=None):
     try:
         if not id:
             return jsonify({'error': 'Payment Id is required!'}), 401
-        seller_payment_status = request.form.get('seller_payment_status', None)
-        dispatcher_payment_status = request.form.get('dispatcher_payment_status', None)
-        if (not seller_payment_status) and (not dispatcher_payment_status):
+        status = request.form.get('status', None)
+        if not status:
             return jsonify({'error': 'Payment status is required!'}), 401
         payment = Payment.query.filter_by(id=id).one()
         order_id = payment.order_id
         user_id = session.get('user_id')
         order = Order.query.filter_by(id=order_id).one()
         if order.seller_id == user_id:
-            payment.seller_payment_status = seller_payment_status
-        elif order.dispatcher_id == user_id:
-            payment.dispatcher_payment_status = dispatcher_payment_status
+            payment.seller_payment_status = status
+            payment.dispatcher_payment_status = status
         else:
-            return jsonify({'message': 'You are not the seller!'})
-        if payment.seller_payment_status == 'paid' and payment.dispatcher_payment_status == 'paid':
+            return jsonify({'message': 'You may not be the seller!'}), 401
+        if payment.seller_payment_status == 'paid':
             order.status = 'completed'
-        elif payment.seller_payment_status == 'inprocess' or payment.dispatcher_payment_status == 'inprocess':
+        elif payment.seller_payment_status == 'inprocess':
             order.status = 'incomplete'
         else:
-            return jsonify({'message': 'Payment status is not correct!'})        
+            return jsonify({'message': 'An error occurred in your input'}), 401      
         
         payment.payment_date_time = datetime.now()
         payment.last_update_time = datetime.now()
@@ -85,7 +83,7 @@ def get_my_payments(order_id=None):
     """This endpoint will get my payments based on my order id"""
     try:
         if not order_id:
-            return jsonify({'error': 'Category Id is required!'}), 401
+            return jsonify({'error': 'Order Id is required!'}), 401
         user_id = session.get('user_id')
         query = Order.query.filter(
             (Order.seller_id == user_id) |
@@ -99,13 +97,14 @@ def get_my_payments(order_id=None):
             'Id': payment.id,
             'Currency': payment.currency,
             'Payment_method': payment.payment_method,
-            'Payment_status': payment.payment_status,
+            'Payment_status': payment.seller_payment_status,
             'Date': payment.last_update_time,
-            'Amount': payment.total_amount if query.seller_id == user_id or
+            'Amount': (payment.seller_amount + payment.dispatcher_amount) if query.seller_id == user_id or
                                                 query.buyer_id == user_id else payment.dispatcher_amount
             } for payment in payments]            
         return jsonify(transaction), 200
     except Exception as e:
+        print(e)
         db.session.rollback()
         logger.error("Error occured:", exc_info=True)
         return jsonify({'error': 'An error occured!'}), 401
