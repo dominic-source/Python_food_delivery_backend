@@ -1,7 +1,7 @@
 """ This module is used to login in user for authentication purposes
 """
 from flask_server.views.v1 import admin_route, app_views, protected_route, logger
-from flask import request, jsonify, make_response, session
+from flask import request, jsonify, session
 from flask_server.models import User, Lga
 from flask_server import allowed_file, db, UPLOAD_FOLDER, bcrypt
 from flask_server.auth import auth
@@ -12,16 +12,28 @@ import os
 @app_views.route('/user', methods=['GET'], strict_slashes=False)
 @protected_route
 def get_user():
-    """This endpoint will return the user basic information"""
+    """
+    Retrieve the basic information of a user.
+
+    Returns:
+        Union[Dict[str, str], Tuple[Dict[str, str], int]]: A JSON response containing the user's information and status code if the retrieval is successful, or an error message and status code if the retrieval fails.
+
+    Raises:
+        HTTPException: 200 (OK) if the retrieval is successful,
+                       400 (Bad Request) if the retrieval fails.
+    """
     try:
-        user = User.query.filter_by(id=session.get('user_id')).one()
+        user = User.query.get(session.get('user_id'))
+        if user is None:
+            return jsonify({'error': 'User not found'}), 404
+
         user_data = {
                 'username': user.username,
-                'first name': user.first_name,
+                'first_name': user.first_name,
                 'last_name': user.last_name,
                 'email': user.email,
-                'phone number': user.phone_number,
-                'vehicle number': user.vehicle_number,
+                'phone_number': user.phone_number,
+                'vehicle_number': user.vehicle_number,
                 'user_type': user.user_type.value,
                 'photo': user.photo,
                 'status': user.status.value,
@@ -30,53 +42,90 @@ def get_user():
             }
         return jsonify(user_data), 200
     except Exception as e:
-        print(e)
         db.session.rollback()
-        return jsonify({'error': 'An error occurred somewhere'}), 400
+        logger.error("Error occurred:", exc_info=True)
+        return jsonify({'error': 'An error occurred!'}), 400
 
 
 @app_views.route('/users', methods=['GET'], strict_slashes=False)
 @admin_route
 @protected_route
 def get_users():
-    """This endpoint retrieves all user of the software"""
+    """
+    Retrieve all users of the software.
+
+    Returns:
+        Union[List[Dict[str, str]], Tuple[List[Dict[str, str]], int]]: A JSON response containing a list of users and status code if the retrieval is successful, or an error message and status code if the retrieval fails.
+
+    Raises:
+        HTTPException: 200 (OK) if the retrieval is successful,
+                       400 (Bad Request) if the retrieval fails.
+    """
     try:
         users = User.query.all()
         users_data = [{
                 'username': user.username,
-                'first name': user.first_name,
+                'first_name': user.first_name,
                 'last_name': user.last_name,
                 'email': user.email
             } for user in users]
         return jsonify(users_data), 200
     except Exception as e:
+        logger.error("Error occurred:", exc_info=True)
         db.session.rollback()
-        return jsonify({'error': 'An error occurred somewhere'}), 400
+        return jsonify({'error': 'An error occurred!'}), 400
 
 
-@app_views.route('/update_password', methods=['POST'], strict_slashes=False)
+@app_views.route('/update_password', methods=['PUT'], strict_slashes=False)
 def update_password():
-    """This will update the password, when the user submits the token"""
+    """
+    Update a user's password.
+
+    Returns:
+        Union[Dict[str, str], Tuple[Dict[str, str], int]]: A JSON response containing a success message and status code if the password update is successful, or an error message and status code if the password update fails.
+
+    Raises:
+        HTTPException: 200 (OK) if the password update is successful,
+                       400 (Bad Request) if the password update fails.
+    """
     if auth.update_password():
-        return jsonify({'success': 'password updated successfully'}), 201
+        return jsonify({'message': 'Password updated successfully'}), 200
     else:
-        return jsonify({'error': 'An error occurred somewhere'}), 400
+        return jsonify({'error': 'An error occurred!'}), 400
 
 
 @app_views.route('/forgot_password', methods=['POST'], strict_slashes=False)
 def forgot_password():
-    """When user forget their password, return a token that will expire in 1 hr"""
+    """
+    Generate a token for a user who forgot their password.
+
+    Returns:
+        Union[Dict[str, str], Tuple[Dict[str, str], int]]: A JSON response containing a success message and status code if the token is generated successfully, or an error message and status code if the token generation fails.
+
+    Raises:
+        HTTPException: 200 (OK) if the token is generated successfully,
+                       400 (Bad Request) if the token generation fails.
+    """
     token = auth.forgot_password()
     if token:
-        return jsonify({"success": "A token was sent to your email!"}), 200
+        return jsonify({"message": "A token was sent to your email!"}), 200
     else:
-        return jsonify({"failure": "An error occurred!"}), 400
-        
+        return jsonify({"error": "An error occurred!"}), 400
 
-@app_views.route('/update_user', methods=['POST'], strict_slashes=False)
+
+@app_views.route('/update_user', methods=['PUT'], strict_slashes=False)
 @protected_route
 def update_user():
-    """This route is used to update users information """
+    """
+    Update a user's information.
+
+    Returns:
+        Union[Dict[str, str], Tuple[Dict[str, str], int]]: A JSON response containing a success message and status code if the update is successful, or an error message and status code if the update fails.
+
+    Raises:
+        HTTPException: 200 (OK) if the update is successful,
+                       400 (Bad Request) if the update fails.
+    """
     try:
         obj = {
             "first_name": request.form.get("first_name", None),
@@ -90,50 +139,76 @@ def update_user():
             "status": request.form.get("status", None)
         }
         user_id = session.get('user_id')
-        user = db.session.query(User).filter_by(id=user_id)
+        user = User.query.get(user_id)
+        if user is None:
+            return jsonify({'error': 'User not found'}), 404
+
         for key, val in obj.items():
             if val:
                 setattr(user, key, val)
         db.session.commit()
-        return jsonify({'data': 'user profile updated successfullly'}), 200
+        return jsonify({'message': 'User profile updated successfully'}), 200
     except Exception as e:
-        logger.error("Error occured:", exc_info=True)
+        logger.error("Error occurred:", exc_info=True)
         db.session.rollback()
-        return jsonify({'error': 'An error occured!'}), 401
-    
+        return jsonify({'error': 'An error occurred!'}), 400
 
-@app_views.route('/logout', methods=['GET'], strict_slashes=False)
+
+@app_views.route('/logout', methods=['POST'], strict_slashes=False)
 @protected_route
 def logout_user():
-    """This endpoint is logs user in"""
-    if auth.logout_user():
-        return 'User logout successful', 200
-    else:
-        return 'unauthorized user', 401
+    """
+    Log out a user.
 
+    Returns:
+        Union[str, Tuple[str, int]]: A success message and status code if the logout is successful, or an error message and status code if the logout fails.
 
-@app_views.route('/delete', methods=['GET'], strict_slashes=False)
-@protected_route
-def delete_user():
-    """This endpoint is logs users out"""
+    Raises:
+        HTTPException: 200 (OK) if the logout is successful,
+                       401 (Unauthorized) if the logout fails.
+    """
     if auth.logout_user():
-        return 'User logout successful', 200
+        return jsonify({'message': 'User logout successful'}), 200
     else:
-        return 'unauthorized user', 401
+        return jsonify({'error': 'Unauthorized user'}), 401
 
 
 @app_views.route('/login', methods=['POST'], strict_slashes=False)
 def login_user():
-    """This endpoint is logs user in"""
+    """
+    Log in a user.
+
+    Returns:
+        Union[str, Tuple[str, int]]: A success message and status code if the login is successful, or an error message and status code if the login fails.
+
+    Raises:
+        HTTPException: 200 (OK) if the login is successful,
+                       401 (Unauthorized) if the login fails.
+    """
     if auth.login_user():
-        return 'User log in successful', 200
+        return jsonify({'message': 'User log in successful'}), 200
     else:
-        return 'email or password incorrect', 401
+        return jsonify({'error': 'Email or password incorrect'}), 401
 
 
 @app_views.route('/register', strict_slashes=False, methods=['POST'])
 def register():
-    """register a user"""
+    """
+    Register a new user.
+
+    Returns:
+        Union[Dict[str, str], Tuple[Dict[str, str], int]]: A JSON response containing the new user's username, creation date, and ID, or an error message, and a status code.
+
+    Raises:
+        HTTPException: 400 (Bad Request) if required fields are missing or if the email or phone number is already in use,
+                       201 (Created) if the user is successfully created,
+                       500 (Internal Server Error) if an internal error occurs.
+    """
+    required_fields = ['first_name', 'last_name', 'username', 'password', 'email', 'phone_number']
+    for field in required_fields:
+        if not request.form.get(field):
+            return jsonify({'error': f'{field} is required'}), 400
+
     first_name = request.form.get('first_name')
     if not first_name:
         return jsonify({'data': 'first_name required!'}), 400
@@ -157,29 +232,25 @@ def register():
     vehicle_number = request.form.get('vehicle_number')
     user_type = request.form.get('user_type')
     status = request.form.get('status')
+
+    if User.query.filter_by(email=email).first():
+        return jsonify({'error': 'Email is already in use'}), 400
+    if User.query.filter_by(phone_number=phone_number).first():
+        return jsonify({'error': 'Phone number is already in use'}), 400
+
     photo = None
-    # store images in static folder
     if 'file' in request.files:
         file = request.files['file']
-        # If the user does not select a file, the browser submits an
-        # empty file without a filename.
-        if file.filename:
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(UPLOAD_FOLDER, filename))
-                photo = filename
-    user_check_email = db.session.query(User).filter_by(email=email).all()
-    if user_check_email:
-        return jsonify({'data': 'user already registered!'}), 403
-    user_check_number = db.session.query(User).filter_by(phone_number=phone_number).all()
-    if user_check_number:
-        return jsonify({'data': 'Phone number is taken!'}), 400
-    # hash password
+        if file.filename and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(UPLOAD_FOLDER, filename))
+            photo = filename
+
     password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
-    if lga_id:
-        lga = db.session.query(Lga).filter_by(id=lga_id).all()
-        if not lga:
-            lga_id = None
+
+    if lga_id and not Lga.query.get(lga_id):
+        lga_id = None
+
     try:
         user = User(
             first_name=first_name,
@@ -197,6 +268,6 @@ def register():
         db.session.commit()
         return jsonify({'username': user.username, 'date': user.created_at, 'id': user.id}), 201
     except Exception as e:
-        logger.error("Error occured:", exc_info=True)
         db.session.rollback()
-        return jsonify({'error': str(e)}), 400
+        logger.error("Error occurred:", exc_info=True)
+        return jsonify({'error': str(e)}), 500
