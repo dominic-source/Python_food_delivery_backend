@@ -1,7 +1,11 @@
 """
-This module is used to authenticate users, and also authorize
-users to be able to carryout some task
+auth.py
+
+This module handles user authentication and authorization tasks.
+It provides functionalities for logging in, logging out, checking 
+if a user is an admin, managing forgotten passwords, and updating passwords.
 """
+
 from flask import session, request
 from flask_server import bcrypt, db, REDIS
 from flask_server.models import User
@@ -9,14 +13,17 @@ import uuid
 import datetime
 import json
 from flask_server.views.v1 import logger
-# from sqlalchemy.orm.exc import NoResultFound
 
-
-class Auth():
+class Auth:
     """The authentication class"""
 
     def is_admin(self) -> bool:
-        """Confirms if the user is an administrator"""
+        """
+        Confirms if the user is an administrator.
+
+        Returns:
+            bool: True if the user is an administrator, False otherwise.
+        """
         user_id = session.get('user_id', None)
         if not user_id:
             return False
@@ -25,11 +32,16 @@ class Auth():
             if user.username != 'admin' or user.email != 'admin@deliver.com':
                 return False
             return True
-        except Exception as e:
+        except Exception:
             return False
 
     def login_user(self) -> bool:
-        """Login a user"""
+        """
+        Log in a user.
+
+        Returns:
+            bool: True if login is successful, False otherwise.
+        """
         email = request.form.get('email', None)
         password = request.form.get('password', None)
         try:
@@ -43,11 +55,16 @@ class Auth():
                     return True
                 session['user_id'] = user.id
                 return True
-        except Exception as e:
+        except Exception:
             return False
     
     def logout_user(self) -> bool:
-        """Logout a user"""
+        """
+        Log out a user.
+
+        Returns:
+            bool: True if logout is successful, False otherwise.
+        """
         if session.get('user_id', None):
             try:
                 session.pop('user_id')
@@ -58,14 +75,24 @@ class Auth():
         elif not session.get('user_id', None):
             return True
 
-    def is_logged_in(self):
-        """Check if user is logged in"""
+    def is_logged_in(self) -> bool:
+        """
+        Check if user is logged in.
+
+        Returns:
+            bool: True if the user is logged in, False otherwise.
+        """
         if session.get('user_id', None):
             return True
         return False
 
     def forgot_password(self) -> bool:
-        """Helper function, to change a users password"""
+        """
+        Helper function to change a user's password.
+
+        Returns:
+            bool: A reset token if successful, False otherwise.
+        """
         email = request.form.get('email')
         if not email:
             return False
@@ -80,25 +107,28 @@ class Auth():
             message = token
             redis = REDIS
             user_data = {
-                        "id": user.id,
-                        "subj":'password update',
-                         "mess":message,
-                         "sen":"chinonsodomnic@gmail.com", 
-                         "rec":email, 
-                         "pas":None
-                         }
+                "id": user.id,
+                "subj": 'password update',
+                "mess": message,
+                "sen": "chinonsodomnic@gmail.com", 
+                "rec": email, 
+                "pas": None
+            }
             data = json.dumps(user_data)
             redis.rpush('user_data_queue', data)
-
-            # mailSender(subj='password update', mess=message, sen="chinonsodomnic@gmail.com", rec=email, pas=None)
             return token
-        except Exception as e:
-            logger.error("Error occured:", exc_info=True)
+        except Exception:
+            logger.error("Error occurred:", exc_info=True)
             db.session.rollback()
             return False
 
     def update_password(self) -> bool:
-        """updates a users password"""
+        """
+        Update a user's password.
+
+        Returns:
+            bool: True if the password update is successful, False otherwise.
+        """
         token = request.form.get('token')
         email = request.form.get('email')
         try:
@@ -116,7 +146,9 @@ class Auth():
             db.session.commit()
             return True
         except Exception:
-            logger.error("Error occured:", exc_info=True)
+            logger.error("Error occurred:", exc_info=True)
             db.session.rollback()
             return False
+
+# Create an instance of the Auth class
 auth = Auth()

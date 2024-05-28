@@ -7,49 +7,45 @@ from flask_server.models import Product, Category, User, Order, OrderItem
 from flask_server import db
 import datetime
 from sqlalchemy.orm.exc import NoResultFound
+from typing import Optional, Tuple
 
 @app_views.route('/order/<int:order_id>', methods=['PUT'], strict_slashes=False)
 @protected_route
-def update_order_items(order_id=None):
-    """This endpoint deletes an order item from an order.
-    Here is the format for the json input: 
-        data = {
-                'orderitems': [
-                    {
-                        'id': 1,
-                        'quantity': 40
-                    },
-                    {
-                        'id': 2,
-                        'quantity': 10
-                    }
-                ]
-            }
+def update_order_items(order_id: Optional[int] = None) -> Tuple[dict, int]:
+    """
+    This endpoint updates an order item from an order.
+
+    :param order_id: The ID of the order to update
+    :return: A tuple containing a dictionary response and a status code
     """
     try:
         user_id = session.get('user_id')
         if not order_id:
-            return jsonify({'message': 'order id required!'}), 401
+            return jsonify({'message': 'Order ID is required!'}), 400
 
-        if request.is_json is False:
-            return jsonify({'error': 'This route requires you use json'}), 401
-        request_data = json.loads(request.json)
+        if not request.is_json:
+            return jsonify({'error': 'This route requires JSON input.'}), 415
+        request_data = request.get_json()
         orderitems = request_data.get('orderitems')
+
         order = Order.query.filter_by(id=order_id).first()
         if not order:
-            return jsonify({'message': 'order not found!'}), 401
+            return jsonify({'message': 'Order not found!'}), 404
+
         if not (order.buyer_id == user_id or order.seller_id == user_id):
-            return jsonify({'message': 'you are not the buyer or seller in the transaction!'}), 401
+            return jsonify({'message': 'Unauthorized transaction!'}), 403
+
         if order.payment and order.payment.payment_status == 'paid':
-            return jsonify({'message': 'order has been paid!'}), 401
+            return jsonify({'message': 'Order has already been paid!'}), 403
 
         for data in orderitems:
             item_id = data.get('id')
             orderitem = OrderItem.query.filter_by(id=item_id).first()
             if not orderitem:
-                return jsonify({'message': 'order item not found!'}), 401
+                return jsonify({'message': 'Order item not found!'}), 404
             if order_id != orderitem.order_id:
-                return jsonify({'message': 'order item not found!'}), 401
+                return jsonify({'message': 'Order item does not belong to this order!'}), 400
+
             quantity = data.get('quantity')
             orderitem.quantity = quantity
 
@@ -60,84 +56,99 @@ def update_order_items(order_id=None):
             total_amount += item.quantity * product.price
         order.total_amount = total_amount
         db.session.commit()
-        return jsonify({'message': 'order item was updated successfully!'}), 200
+        return jsonify({'message': 'Order item was updated successfully!'}), 200
+
     except Exception as e:
         db.session.rollback()
         logger.error("Error occurred:", exc_info=True)
-        return jsonify({'error': 'An error occurred!'}), 401
+        return jsonify({'error': 'An internal error occurred!'}), 500
 
 
 @app_views.route('/order/<int:order_id>/<int:orderitem_id>', methods=['DELETE'], strict_slashes=False)
 @protected_route
-def delete_an_order_item(order_id=None, orderitem_id=None):
-    """This endpoint deletes an order item from an order.
+def delete_an_order_item(order_id: Optional[int] = None, orderitem_id: Optional[int] = None) -> Tuple[dict, int]:
+    """
+    This endpoint deletes an order item from an order.
+
+    :param order_id: The ID of the order
+    :param orderitem_id: The ID of the order item to delete
+    :return: A tuple containing a dictionary response and a status code
     """
     try:
         user_id = session.get('user_id')
         if not order_id:
-            return jsonify({'message': 'order id required!'}), 401
+            return jsonify({'message': 'Order ID is required!'}), 400
         if not orderitem_id:
-            return jsonify({'message': 'order item id required!'}), 401
+            return jsonify({'message': 'Order item ID is required!'}), 400
+
         order = Order.query.filter_by(id=order_id).first()
         if not order:
-            return jsonify({'message': 'order not found!'}), 401
+            return jsonify({'message': 'Order not found!'}), 404
         if not (order.buyer_id == user_id or order.seller_id == user_id):
-            return jsonify({'message': 'you are not the buyer or seller in the transaction!'}), 401
+            return jsonify({'message': 'Unauthorized transaction!'}), 403
         if order.payment and order.payment.payment_status == 'paid':
-            return jsonify({'message': 'order has been paid!'}), 401
+            return jsonify({'message': 'Order has already been paid!'}), 403
         if order.payment and order.payment.payment_status == 'inprocess':
             if order.payment.last_update_time > (datetime.datetime.now() - datetime.timedelta(minutes=60)):
-                return jsonify({'message': 'order in process of payment!'}), 401
+                return jsonify({'message': 'Order is in process of payment!'}), 403
+
         orderitem = OrderItem.query.filter_by(id=orderitem_id).first()
         if not orderitem:
-            return jsonify({'message': 'order item not found!'}), 401
+            return jsonify({'message': 'Order item not found!'}), 404
         if orderitem.order_id != order_id:
-            return jsonify({'message': 'order item not found!'}), 401
+            return jsonify({'message': 'Order item does not belong to this order!'}), 400
 
         db.session.delete(orderitem)
         db.session.commit()
-        return jsonify({'message': 'order item was deleted successfully!'}), 200
+        return jsonify({'message': 'Order item was deleted successfully!'}), 200
+
     except Exception as e:
         db.session.rollback()
         logger.error("Error occurred:", exc_info=True)
-        return jsonify({'error': 'An error occurred!'}), 401
+        return jsonify({'error': 'An internal error occurred!'}), 500
 
 
-@app_views.route('/order/<int:id>', methods=['DELETE'], strict_slashes=False)
+@app_views.route('/order/<int:order_id>', methods=['DELETE'], strict_slashes=False)
 @protected_route
-def delete_order(id=None):
-    """Delete an order"""
+def delete_order(order_id: Optional[int] = None) -> Tuple[dict, int]:
+    """
+    This endpoint deletes an order.
+
+    :param order_id: The ID of the order to delete
+    :return: A tuple containing a dictionary response and a status code
+    """
     try:
         user_id = session.get('user_id')
-        if not id:
-            return jsonify({'message': 'order id required'}), 401
-        order = Order.query.filter_by(id=id).first()
+        if not order_id:
+            return jsonify({'message': 'Order ID is required!'}), 400
+
+        order = Order.query.filter_by(id=order_id).first()
         if not order:
-            return jsonify({'message': 'order not found!'}), 401
+            return jsonify({'message': 'Order not found!'}), 404
         if not (order.buyer_id == user_id or order.seller_id == user_id):
-            return jsonify({'message': 'you are not the buyer or seller in the transaction'}), 401
+            return jsonify({'message': 'Unauthorized transaction!'}), 403
         if order.payment and order.payment.payment_status == 'paid':
-            return jsonify({'message': 'order has been paid!'}), 401
+            return jsonify({'message': 'Order has already been paid!'}), 403
         if order.payment and order.payment.payment_status == 'inprocess':
             if order.payment.last_update_time > (datetime.datetime.now() - datetime.timedelta(minutes=60)):
-                return jsonify({'message': 'order in process of payment!'}), 401
+                return jsonify({'message': 'Order is in process of payment!'}), 403
+
         db.session.delete(order)
         db.session.commit()
-        return jsonify({'message': 'order deleted successfully'}), 200
+        return jsonify({'message': 'Order was deleted successfully!'}), 200
+
     except Exception as e:
         db.session.rollback()
         logger.error("Error occurred:", exc_info=True)
-        return jsonify({'error': 'An error occurred!'}), 401
-
+        return jsonify({'error': 'An internal error occurred!'}), 500
 
 @app_views.route('/order', methods=['PUT'], strict_slashes=False)
 @protected_route
-def update_order_address():
-    """This endpoint updates an orders address
+def update_order_address() -> Tuple[dict, int]:
+    """
+    This endpoint updates an order's address.
 
-    endpoint: /order
-        You can only update an order if you are the buyer in the transaction
-    
+    You can only update an order if you are the buyer in the transaction.
     Request content-type: form/encoded
 
     Request body:
@@ -151,22 +162,28 @@ def update_order_address():
         user_id = session.get('user_id')
         order_id = request.form.get('order_id')
         delivery_address = request.form.get('delivery_address')
-        if not order_id:
-            return jsonify({'error': 'order id required'}), 401
+
+        if not order_id or not order_id.isdigit():
+            return jsonify({'error': 'Valid order ID is required'}), 400
+
+        order_id = int(order_id)
         order = Order.query.filter_by(id=order_id).first()
         if not order:
-            return jsonify({'error': 'order not found!'}), 401
+            return jsonify({'error': 'Order not found!'}), 404
         if order.buyer_id != user_id:
-            return jsonify({'error': 'you are not the buyer in the transaction'}), 401
+            return jsonify({'error': 'Unauthorized transaction!'}), 403
+
         if delivery_address:
             order.delivery_address = delivery_address
             order.last_update_time = datetime.datetime.now()
+
         db.session.commit()
-        return jsonify({'message': 'order updated successfully'}), 200
+        return jsonify({'message': 'Order updated successfully!'}), 200
+
     except Exception as e:
         db.session.rollback()
-        logger.error("Error occured:", exc_info=True)
-        return jsonify({'error': 'An error occured!'}), 401
+        logger.error("Error occurred:", exc_info=True)
+        return jsonify({'error': 'An internal error occurred!'}), 500
 
 
 @app_views.route('/order_items/<id>', methods=['GET'], strict_slashes=False)

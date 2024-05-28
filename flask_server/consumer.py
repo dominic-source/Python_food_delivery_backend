@@ -1,3 +1,10 @@
+"""
+consumer.py
+
+This module defines a consumer process that listens to a Redis queue for
+tasks, processes these tasks, and sends emails using the mailSender function.
+"""
+
 from flask_server.email_client import mailSender
 import logging
 import asyncio
@@ -11,7 +18,14 @@ logging.basicConfig(filename='consumer.log', level=logging.INFO, format='%(ascti
 r = redis.Redis(host='localhost', port=6379)
 
 async def main():
-    print("consumer process has started!")
+    """
+    Main consumer process that listens to the Redis queue and processes tasks.
+
+    This function runs in an infinite loop, blocking and popping messages from 
+    the Redis queue, and then creating tasks to send emails based on the popped 
+    messages.
+    """
+    print("Consumer process has started!")
     while True:
         logging.info("Loop 1")
         # Block and pop a message from the queue
