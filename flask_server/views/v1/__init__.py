@@ -9,7 +9,6 @@ for route protection and administration checks.
 from flask import Blueprint, jsonify
 import logging
 from functools import wraps
-from flask_server.auth import auth  # Assuming auth is imported correctly
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -75,6 +74,7 @@ def generate_orders(order: list) -> list:
             'status': order_b.status,
             'delivery_address': order_b.delivery_address,
             } for order_b in order]
+
 
 # Create a Blueprint for the application views
 app_views = Blueprint('app_views', __name__, url_prefix='/api')
