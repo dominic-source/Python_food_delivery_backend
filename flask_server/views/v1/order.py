@@ -15,36 +15,48 @@ def update_order_items(order_id: Optional[int] = None) -> Tuple[dict, int]:
     """
     This endpoint updates an order item from an order.
 
-    :param order_id: The ID of the order to update
-    :return: A tuple containing a dictionary response and a status code
+    Args:
+        order_id (int, optional): The ID of the order to update.
+
+    Returns:
+        Tuple[dict, int]: A tuple containing a JSON response and a status code.
+        The JSON response contains a success message or an error message.
+
+    Raises:
+        HTTPException: 400 (Bad Request) if the order ID is not provided or if an order item does not belong to the order,
+                       403 (Forbidden) if the user is not authorized to update the order or if the order has already been paid,
+                       404 (Not Found) if the order or an order item does not exist,
+                       415 (Unsupported Media Type) if the request is not JSON,
+                       500 (Internal Server Error) if an error occurs during update.
     """
     try:
         user_id = session.get('user_id')
         if not order_id:
-            return jsonify({'message': 'Order ID is required!'}), 400
+            return jsonify({'error': 'Order ID is required'}), 400
 
         if not request.is_json:
-            return jsonify({'error': 'This route requires JSON input.'}), 415
+            return jsonify({'error': 'This route requires JSON input'}), 415
+
         request_data = request.get_json()
         orderitems = request_data.get('orderitems')
 
-        order = Order.query.filter_by(id=order_id).first()
+        order = Order.query.get(order_id)
         if not order:
-            return jsonify({'message': 'Order not found!'}), 404
+            return jsonify({'error': 'Order not found'}), 404
 
         if not (order.buyer_id == user_id or order.seller_id == user_id):
-            return jsonify({'message': 'Unauthorized transaction!'}), 403
+            return jsonify({'error': 'Unauthorized transaction'}), 403
 
         if order.payment and order.payment.payment_status == 'paid':
-            return jsonify({'message': 'Order has already been paid!'}), 403
+            return jsonify({'error': 'Order has already been paid'}), 403
 
         for data in orderitems:
             item_id = data.get('id')
-            orderitem = OrderItem.query.filter_by(id=item_id).first()
+            orderitem = OrderItem.query.get(item_id)
             if not orderitem:
-                return jsonify({'message': 'Order item not found!'}), 404
+                return jsonify({'error': 'Order item not found'}), 404
             if order_id != orderitem.order_id:
-                return jsonify({'message': 'Order item does not belong to this order!'}), 400
+                return jsonify({'error': 'Order item does not belong to this order'}), 400
 
             quantity = data.get('quantity')
             orderitem.quantity = quantity
@@ -52,16 +64,17 @@ def update_order_items(order_id: Optional[int] = None) -> Tuple[dict, int]:
         # Update the order total amount
         total_amount = 0
         for item in order.orderitems:
-            product = Product.query.filter_by(id=item.product_id).first()
+            product = Product.query.get(item.product_id)
             total_amount += item.quantity * product.price
         order.total_amount = total_amount
         db.session.commit()
-        return jsonify({'message': 'Order item was updated successfully!'}), 200
+
+        return jsonify({'message': 'Order item was updated successfully'}), 200
 
     except Exception as e:
         db.session.rollback()
         logger.error("Error occurred:", exc_info=True)
-        return jsonify({'error': 'An internal error occurred!'}), 500
+        return jsonify({'error': 'An internal error occurred'}), 500
 
 
 @app_views.route('/order/<int:order_id>/<int:orderitem_id>', methods=['DELETE'], strict_slashes=False)
@@ -70,42 +83,53 @@ def delete_an_order_item(order_id: Optional[int] = None, orderitem_id: Optional[
     """
     This endpoint deletes an order item from an order.
 
-    :param order_id: The ID of the order
-    :param orderitem_id: The ID of the order item to delete
-    :return: A tuple containing a dictionary response and a status code
+    Args:
+        order_id (int, optional): The ID of the order.
+        orderitem_id (int, optional): The ID of the order item to delete.
+
+    Returns:
+        Tuple[dict, int]: A tuple containing a JSON response and a status code.
+        The JSON response contains a success message or an error message.
+
+    Raises:
+        HTTPException: 400 (Bad Request) if the order ID or order item ID is not provided or if an order item does not belong to the order,
+                       403 (Forbidden) if the user is not authorized to delete the order item or if the order has already been paid or is in process of payment,
+                       404 (Not Found) if the order or the order item does not exist,
+                       500 (Internal Server Error) if an error occurs during deletion.
     """
     try:
         user_id = session.get('user_id')
         if not order_id:
-            return jsonify({'message': 'Order ID is required!'}), 400
+            return jsonify({'error': 'Order ID is required'}), 400
         if not orderitem_id:
-            return jsonify({'message': 'Order item ID is required!'}), 400
+            return jsonify({'error': 'Order item ID is required'}), 400
 
-        order = Order.query.filter_by(id=order_id).first()
+        order = Order.query.get(order_id)
         if not order:
-            return jsonify({'message': 'Order not found!'}), 404
+            return jsonify({'error': 'Order not found'}), 404
         if not (order.buyer_id == user_id or order.seller_id == user_id):
-            return jsonify({'message': 'Unauthorized transaction!'}), 403
+            return jsonify({'error': 'Unauthorized transaction'}), 403
         if order.payment and order.payment.payment_status == 'paid':
-            return jsonify({'message': 'Order has already been paid!'}), 403
+            return jsonify({'error': 'Order has already been paid'}), 403
         if order.payment and order.payment.payment_status == 'inprocess':
             if order.payment.last_update_time > (datetime.datetime.now() - datetime.timedelta(minutes=60)):
-                return jsonify({'message': 'Order is in process of payment!'}), 403
+                return jsonify({'error': 'Order is in process of payment'}), 403
 
-        orderitem = OrderItem.query.filter_by(id=orderitem_id).first()
+        orderitem = OrderItem.query.get(orderitem_id)
         if not orderitem:
-            return jsonify({'message': 'Order item not found!'}), 404
+            return jsonify({'error': 'Order item not found'}), 404
         if orderitem.order_id != order_id:
-            return jsonify({'message': 'Order item does not belong to this order!'}), 400
+            return jsonify({'error': 'Order item does not belong to this order'}), 400
 
         db.session.delete(orderitem)
         db.session.commit()
-        return jsonify({'message': 'Order item was deleted successfully!'}), 200
+
+        return jsonify({'message': 'Order item was deleted successfully'}), 200
 
     except Exception as e:
         db.session.rollback()
         logger.error("Error occurred:", exc_info=True)
-        return jsonify({'error': 'An internal error occurred!'}), 500
+        return jsonify({'error': 'An internal error occurred'}), 500
 
 
 @app_views.route('/order/<int:order_id>', methods=['DELETE'], strict_slashes=False)
@@ -114,33 +138,45 @@ def delete_order(order_id: Optional[int] = None) -> Tuple[dict, int]:
     """
     This endpoint deletes an order.
 
-    :param order_id: The ID of the order to delete
-    :return: A tuple containing a dictionary response and a status code
+    Args:
+        order_id (int, optional): The ID of the order to delete.
+
+    Returns:
+        Tuple[dict, int]: A tuple containing a JSON response and a status code.
+        The JSON response contains a success message or an error message.
+
+    Raises:
+        HTTPException: 400 (Bad Request) if the order ID is not provided,
+                       403 (Forbidden) if the user is not authorized to delete the order or if the order has already been paid or is in process of payment,
+                       404 (Not Found) if the order does not exist,
+                       500 (Internal Server Error) if an error occurs during deletion.
     """
     try:
         user_id = session.get('user_id')
         if not order_id:
-            return jsonify({'message': 'Order ID is required!'}), 400
+            return jsonify({'error': 'Order ID is required'}), 400
 
-        order = Order.query.filter_by(id=order_id).first()
+        order = Order.query.get(order_id)
         if not order:
-            return jsonify({'message': 'Order not found!'}), 404
+            return jsonify({'error': 'Order not found'}), 404
         if not (order.buyer_id == user_id or order.seller_id == user_id):
-            return jsonify({'message': 'Unauthorized transaction!'}), 403
+            return jsonify({'error': 'Unauthorized transaction'}), 403
         if order.payment and order.payment.payment_status == 'paid':
-            return jsonify({'message': 'Order has already been paid!'}), 403
+            return jsonify({'error': 'Order has already been paid'}), 403
         if order.payment and order.payment.payment_status == 'inprocess':
             if order.payment.last_update_time > (datetime.datetime.now() - datetime.timedelta(minutes=60)):
-                return jsonify({'message': 'Order is in process of payment!'}), 403
+                return jsonify({'error': 'Order is in process of payment'}), 403
 
         db.session.delete(order)
         db.session.commit()
-        return jsonify({'message': 'Order was deleted successfully!'}), 200
+
+        return jsonify({'message': 'Order was deleted successfully'}), 200
 
     except Exception as e:
         db.session.rollback()
         logger.error("Error occurred:", exc_info=True)
-        return jsonify({'error': 'An internal error occurred!'}), 500
+        return jsonify({'error': 'An internal error occurred'}), 500
+
 
 @app_views.route('/order', methods=['PUT'], strict_slashes=False)
 @protected_route
@@ -148,15 +184,19 @@ def update_order_address() -> Tuple[dict, int]:
     """
     This endpoint updates an order's address.
 
-    You can only update an order if you are the buyer in the transaction.
-    Request content-type: form/encoded
-
-    Request body:
+    Args:
         order_id (int, mandatory): The ID of the order to update.
-        delivery_address: The delivery address of the order.
+        delivery_address (str, optional): The delivery address of the order.
 
     Returns:
-        JSON: A JSON response containing a message of success or failure
+        Tuple[dict, int]: A tuple containing a JSON response and a status code.
+        The JSON response contains a success message or an error message.
+
+    Raises:
+        HTTPException: 400 (Bad Request) if the order ID is not provided or is not a valid integer,
+                       403 (Forbidden) if the user is not authorized to update the order,
+                       404 (Not Found) if the order does not exist,
+                       500 (Internal Server Error) if an error occurs during update.
     """
     try:
         user_id = session.get('user_id')
@@ -167,47 +207,49 @@ def update_order_address() -> Tuple[dict, int]:
             return jsonify({'error': 'Valid order ID is required'}), 400
 
         order_id = int(order_id)
-        order = Order.query.filter_by(id=order_id).first()
+        order = Order.query.get(order_id)
         if not order:
-            return jsonify({'error': 'Order not found!'}), 404
+            return jsonify({'error': 'Order not found'}), 404
         if order.buyer_id != user_id:
-            return jsonify({'error': 'Unauthorized transaction!'}), 403
+            return jsonify({'error': 'Unauthorized transaction'}), 403
 
         if delivery_address:
             order.delivery_address = delivery_address
             order.last_update_time = datetime.datetime.now()
 
         db.session.commit()
-        return jsonify({'message': 'Order updated successfully!'}), 200
+
+        return jsonify({'message': 'Order updated successfully'}), 200
 
     except Exception as e:
         db.session.rollback()
         logger.error("Error occurred:", exc_info=True)
-        return jsonify({'error': 'An internal error occurred!'}), 500
-
+        return jsonify({'error': 'An internal error occurred'}), 500
 
 @app_views.route('/order_items/<id>', methods=['GET'], strict_slashes=False)
 @protected_route
-def get_all_items_of_order(id=None):
-    """This endpoint gets all the items associated with an order.
+def get_all_items_of_order(id: Optional[str] = None) -> Tuple[dict, int]:
+    """
+    This endpoint retrieves all the items associated with an order.
 
     To access this endpoint, your user ID must be either a seller, buyer,
     or dispatcher associated with the order.
 
     Args:
-        id (int, mandatory): The ID of the order to retrieve items for.
+        id (str, optional): The ID of the order to retrieve items for.
 
     Returns:
-        JSON: A JSON response containing the order items or an error message.
+        Tuple[dict, int]: A tuple containing a JSON response and a status code.
+        The JSON response contains the order items or an error message.
 
     Raises:
-        HTTPException: 401 (Unauthorized) if the order ID is missing,
-                       or an error occurs during retrieval.
+        HTTPException: 400 (Bad Request) if the order ID is missing,
+                       404 (Not Found) if the order is not found,
+                       500 (Internal Server Error) if an error occurs during retrieval.
     """
-
     try:
-        if id is None:
-            return jsonify({'error': 'order id required'}), 401
+        if id is None or not id.isdigit():
+            return jsonify({'error': 'Valid order ID is required'}), 400
 
         user_id = session.get('user_id')
 
@@ -216,48 +258,64 @@ def get_all_items_of_order(id=None):
             (Order.seller_id == user_id) |
             (Order.buyer_id == user_id) |
             (Order.dispatcher_id == user_id)
-        ).filter_by(id=id)
+        ).filter_by(id=int(id))
 
         orderitems = query.one().orderitems
         items = [{ 
             'id': order.id,
             'product_id': order.product_id,
             'quantity': order.quantity} for order in orderitems]
-        return jsonify(items)
+        return jsonify(items), 200
 
     except NoResultFound:
         return jsonify({'error': 'Order not found'}), 404
 
     except Exception as e:
         db.session.rollback()
-        logger.error("Error occured:", exc_info=True)
-        return jsonify({'error': 'An error occured!'}), 401
+        logger.error("Error occurred:", exc_info=True)
+        return jsonify({'error': 'An internal error occurred!'}), 500
 
 
 @app_views.route('/all_orders', methods=['GET'], strict_slashes=False)
 @admin_route
 @protected_route
-def get_all_order():
-    """This route is an admin route to get all orders"""
+def get_all_order() -> Tuple[dict, int]:
+    """
+    This endpoint retrieves all orders. It is accessible only to admins.
+
+    Returns:
+        Tuple[dict, int]: A tuple containing a JSON response and a status code.
+        The JSON response contains all the orders or an error message.
+
+    Raises:
+        HTTPException: 500 (Internal Server Error) if an error occurs during retrieval.
+    """
     try:
         orders = Order.query.all()
-        return jsonify(generate_orders(orders)) 
+        return jsonify(generate_orders(orders)), 200
     except Exception as e:
         db.session.rollback()
-        logger.error("Error occured:", exc_info=True)
-        return jsonify({'error': 'An error occured!'}), 401
+        logger.error("Error occurred:", exc_info=True)
+        return jsonify({'error': 'An internal error occurred!'}), 500
 
 
 @app_views.route('/my_orders', methods=['GET'], strict_slashes=False)
 @protected_route
-def get_my_orders():
-    """This route returns all the users order as a buyer and/or seller and/or dispatcher
-        endpoint: my_orders
+def get_my_orders() -> Tuple[dict, int]:
+    """
+    This endpoint returns all the user's orders as a buyer, seller, and/or dispatcher.
 
-        request arguments'/api/my_orders?seller=false&buyer=true&dispatcher=false':
-            seller: true | false
-            buyer: true | false
-            dispatcher: true | false
+    Args:
+        seller (str, optional): If 'true', returns orders where the user is the seller.
+        buyer (str, optional): If 'true', returns orders where the user is the buyer.
+        dispatcher (str, optional): If 'true', returns orders where the user is the dispatcher.
+
+    Returns:
+        Tuple[dict, int]: A tuple containing a JSON response and a status code.
+        The JSON response contains the orders or an error message.
+
+    Raises:
+        HTTPException: 500 (Internal Server Error) if an error occurs during retrieval.
     """
     seller = request.args.get('seller', 'false')
     buyer = request.args.get('buyer', 'false')
@@ -267,63 +325,82 @@ def get_my_orders():
         id = session.get('user_id')
         if buyer.lower() == 'true':
             order_b = Order.query.filter_by(buyer_id=id).all()
-            data['buyer'] =  generate_orders(order_b)
+            data['buyer'] = generate_orders(order_b)
         if seller.lower() == 'true':
             order_s = Order.query.filter_by(seller_id=id).all()
-            data['seller'] =  generate_orders(order_s)
+            data['seller'] = generate_orders(order_s)
         if dispatcher.lower() == 'true':
             order_d = Order.query.filter_by(dispatcher_id=id).all()
             data['dispatcher'] = generate_orders(order_d)
         return jsonify(data), 200
     except Exception as e:
         db.session.rollback()
-        logger.error("Error occured:", exc_info=True)
-        return jsonify({'error': 'An error occured!'}), 401
+        logger.error("Error occurred:", exc_info=True)
+        return jsonify({'error': 'An internal error occurred!'}), 500
 
 
 @app_views.route('/order', methods=['POST'], strict_slashes=False)
 @protected_route
-def create_order():
-    """This endpoint retrieves all usersproducts"""
+def create_order() -> Tuple[dict, int]:
+    """
+    This endpoint creates a new order.
+
+    The request data should include 'seller_id', 'dispatcher_id', 'delivery_address', and 'orderitems'.
+    'orderitems' should be a list of dictionaries, each containing 'product_id' and 'quantity'.
+
+    Returns:
+        Tuple[dict, int]: A tuple containing a JSON response and a status code.
+        The JSON response contains the ID of the created order or an error message.
+
+    Raises:
+        HTTPException: 401 (Unauthorized) if the request is not JSON,
+                       if the seller or dispatcher does not exist,
+                       or if a product does not exist.
+                       500 (Internal Server Error) if an error occurs during creation.
+    """
     try:
-        if request.is_json is False:
+        if not request.is_json:
             return jsonify({'error': 'This route requires you use json'}), 401
-        request_data = json.loads(request.json)
+
+        request_data = request.get_json()
         seller_id = request_data.get('seller_id')
         buyer_id = session.get('user_id')
         dispatcher_id = request_data.get('dispatcher_id')
         delivery_address = request_data.get('delivery_address')
         orderitems = request_data.get('orderitems')
-        # verify if the seller exist or not
-        seller = User.query.filter_by(id=seller_id).first()
+
+        seller = User.query.get(seller_id)
         if not seller:
-            return jsonify({'error': 'seller not found!'}), 401
-        if not dispatcher_id:
-            return jsonify({'error': 'dispatcher not found!'}), 401
-        # verify if the dispatcher exist or not
-        dispatcher = User.query.filter_by(id=dispatcher_id).first()
+            return jsonify({'error': 'Seller not found'}), 401
+
+        dispatcher = User.query.get(dispatcher_id)
         if not dispatcher:
-            return jsonify({'error': 'dispatcher not found!'}), 401
+            return jsonify({'error': 'Dispatcher not found'}), 401
+
         order_n = Order(seller_id=seller_id, buyer_id=buyer_id, dispatcher_id=dispatcher_id, delivery_address=delivery_address)
         total_amount = 0
         currency = None
+
         for data in orderitems:
             product_id = data['product_id']
             quantity = data['quantity']
-            product = Product.query.filter_by(id=product_id).first()
-            currency = product.currency
+            product = Product.query.get(product_id)
             if not product:
-                return jsonify({'error': 'product not found!'}), 401
+                return jsonify({'error': 'Product not found'}), 401
+
             total_amount += product.price * quantity
             item = OrderItem(order_id=order_n.id, product_id=product_id, quantity=quantity)
             order_n.orderitems.append(item)
+            currency = product.currency
 
         order_n.currency = currency
         order_n.total_amount = total_amount
         db.session.add(order_n)
         db.session.commit()
+
         return jsonify({'order_id': order_n.id}), 201
+
     except Exception as e:
         db.session.rollback()
-        logger.error("Error occured:", exc_info=True)
-        return jsonify({'error': 'An error occured!'}), 401
+        logger.error("Error occurred:", exc_info=True)
+        return jsonify({'error': 'An internal error occurred!'}), 500
