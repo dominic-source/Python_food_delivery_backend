@@ -5,6 +5,7 @@ This module initializes the Flask application with its configurations,
 database setup, session management, and other necessary integrations.
 """
 
+from datetime import timedelta
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
@@ -43,6 +44,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
 app.config['SESSION_TYPE'] = 'redis'
 app.config['SESSION_REDIS'] = Redis(host='localhost', port=6379)
 REDIS = app.config['SESSION_REDIS']
+
+# Configure session expiry date to 1 day
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
+
+# Initialize the session management
 Session(app)
 
 # Instantiate the SQLAlchemy database
