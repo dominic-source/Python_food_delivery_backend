@@ -77,7 +77,7 @@ def generate_orders(order: list) -> list:
 
 
 # Create a Blueprint for the application views
-app_views = Blueprint('app_views', __name__, url_prefix='/api')
+app_views = Blueprint('app_views', __name__, url_prefix='/api/v1')
 
 # Import all necessary modules to register routes
 from flask_server.views.v1.user import *
