@@ -1,0 +1,952 @@
+{
+  "info": {
+    "name": "User",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/"
+  },
+  "item": [
+    {
+        "id": "1",
+        "name": "user login",
+        "description": "This is an Item that logs in a user.",
+        "request": {
+            "description": "Log in a user.",
+            "url": "http://127.0.0.2:5000/api/v1/login",
+            "method": "POST",
+            "header": [
+            {
+                "key": "Content-Type",
+                "value": "application/json"
+            }
+            ],
+            "body": {
+            "mode": "urlencoded",
+            "urlencoded": [
+                {
+                "key": "email",
+                "value": "my_email",
+                "type": "text"
+                },
+                {
+                "key": "password",
+                "value": "my_password",
+                "type": "text"
+                },
+                {
+                "key": "remember_me",
+                "value": "true",
+                "type": "text"
+                }
+            ]
+            }
+        },
+        "response": [
+            {
+            "name": "Successful Login",
+            "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                "mode": "urlencoded",
+                "urlencoded": [
+                    {
+                    "key": "email",
+                    "value": "my_email",
+                    "type": "text"
+                    },
+                    {
+                    "key": "password",
+                    "value": "my_password",
+                    "type": "text"
+                    },
+                    {
+                    "key": "remember_me",
+                    "value": "true",
+                    "type": "text"
+                    }
+                ]
+                },
+                "url": {
+                "raw": "http://127.0.0.2:5000/api/v1/login",
+                "protocol": "http",
+                "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "2"
+                ],
+                "port": "5000",
+                "path": [
+                    "api",
+                    "v1",
+                    "login"
+                ]
+                }
+            },
+            "status": "OK",
+            "code": 200,
+            "header": [
+                {
+                "key": "Content-Type",
+                "value": "application/json"
+                }
+            ],
+            "body": "{\n  \"message\": \"User log in successful\"\n}"
+            },
+            {
+            "name": "Failed Login",
+            "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                "mode": "urlencoded",
+                "urlencoded": [
+                    {
+                    "key": "email",
+                    "value": "my_email",
+                    "type": "text"
+                    },
+                    {
+                    "key": "password",
+                    "value": "my_password",
+                    "type": "text"
+                    },
+                    {
+                    "key": "remember_me",
+                    "value": "true",
+                    "type": "text"
+                    }
+                ]
+                },
+                "url": {
+                "raw": "http://127.0.0.2:5000/api/v1/login",
+                "protocol": "http",
+                "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "2"
+                ],
+                "port": "5000",
+                "path": [
+                    "api",
+                    "v1",
+                    "login"
+                ]
+                }
+            },
+            "status": "Unauthorized",
+            "code": 401,
+            "header": [
+                {
+                "key": "Content-Type",
+                "value": "application/json"
+                }
+            ],
+            "body": "{\n  \"error\": \"Email or password incorrect\"\n}"
+            }
+        ]
+    },
+
+    {
+      "id": "2",
+      "name": "user registration",
+      "description": "This is an Item that registers a new user.",
+      "request": {
+        "description": "Register a new user.",
+        "url": "http://127.0.0.2:5000/api/v1/register",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "first_name",
+              "value": "my_first_name",
+              "type": "text"
+            },
+            {
+              "key": "last_name",
+              "value": "my_last_name",
+              "type": "text"
+            },
+            {
+              "key": "username",
+              "value": "my_username",
+              "type": "text"
+            },
+            {
+              "key": "password",
+              "value": "my_password",
+              "type": "text"
+            },
+            {
+              "key": "email",
+              "value": "my_email",
+              "type": "text"
+            },
+            {
+              "key": "phone_number",
+              "value": "my_phone_number",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Successful Registration",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "first_name",
+                  "value": "my_first_name",
+                  "type": "text"
+                },
+                {
+                  "key": "last_name",
+                  "value": "my_last_name",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "my_username",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "my_password",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "my_email",
+                  "type": "text"
+                },
+                {
+                  "key": "phone_number",
+                  "value": "my_phone_number",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/register",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "register"
+              ]
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"username\": \"my_username\", \"date\": \"creation_date\", \"id\": \"user_id\"\n}"
+        },
+        {
+          "name": "Failed Registration",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "first_name",
+                  "value": "my_first_name",
+                  "type": "text"
+                },
+                {
+                  "key": "last_name",
+                  "value": "my_last_name",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "my_username",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "my_password",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "my_email",
+                  "type": "text"
+                },
+                {
+                  "key": "phone_number",
+                  "value": "my_phone_number",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/register",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "register"
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"Error message\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "3",
+      "name": "user logout",
+      "description": "This is an Item that logs out a user.",
+      "request": {
+        "description": "Log out a user.",
+        "url": "http://127.0.0.2:5000/api/v1/logout",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Successful Logout",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/logout",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "logout"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"User logout successful\"\n}"
+        },
+        {
+          "name": "Failed Logout",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/logout",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "logout"
+              ]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"Unauthorized user\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "4",
+      "name": "update user",
+      "description": "This is an Item that updates a user's information.",
+      "request": {
+        "description": "Update a user's information.",
+        "url": "http://127.0.0.2:5000/api/v1/update_user",
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {"key": "first_name", "value": "<first_name>", "type": "text"},
+            {"key": "last_name", "value": "<last_name>", "type": "text"},
+            {"key": "username", "value": "<username>", "type": "text"},
+            {"key": "email", "value": "<email>", "type": "text"},
+            {"key": "vehicle_number", "value": "<vehicle_number>", "type": "text"},
+            {"key": "user_type", "value": "<user_type>", "type": "text"},
+            {"key": "lga_id", "value": "<lga_id>", "type": "text"},
+            {"key": "phone_number", "value": "<phone_number>", "type": "text"},
+            {"key": "status", "value": "<status>", "type": "text"}
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Successful Update",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/update_user",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "update_user"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"User profile updated successfully\"\n}"
+        },
+        {
+          "name": "Failed Update",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/update_user",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "update_user"
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An error occurred!\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "5",
+      "name": "forgot password",
+      "description": "This is an Item that generates a token for a user who forgot their password.",
+      "request": {
+        "description": "Generate a token for a user who forgot their password.",
+        "url": "http://127.0.0.2:5000/api/v1/forgot_password",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Successful Token Generation",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/forgot_password",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "forgot_password"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"A token was sent to your email!\"\n}"
+        },
+        {
+          "name": "Failed Token Generation",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/forgot_password",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "forgot_password"
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An error occurred!\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "6",
+      "name": "update password",
+      "description": "This is an Item that updates a user's password.",
+      "request": {
+        "description": "Update a user's password.",
+        "url": "http://127.0.0.2:5000/api/v1/update_password",
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {"key": "old_password", "value": "<old_password>", "type": "text"},
+            {"key": "new_password", "value": "<new_password>", "type": "text"}
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Successful Password Update",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/update_password",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "update_password"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Password updated successfully\"\n}"
+        },
+        {
+          "name": "Failed Password Update",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/update_password",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "update_password"
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An error occurred!\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "7",
+      "name": "get users",
+      "description": "This is an Item that retrieves all users of the software.",
+      "request": {
+        "description": "Retrieve all users of the software.",
+        "url": "http://127.0.0.2:5000/api/v1/users",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Successful Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/users",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  {\n    \"username\": \"<username>\",\n    \"first_name\": \"<first_name>\",\n    \"last_name\": \"<last_name>\",\n    \"email\": \"<email>\"\n  },\n  ...\n]"
+        },
+        {
+          "name": "Failed Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/users",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An error occurred!\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "8",
+      "name": "get user",
+      "description": "This is an Item that retrieves the basic information of a user.",
+      "request": {
+        "description": "Retrieve the basic information of a user.",
+        "url": "http://127.0.0.2:5000/api/v1/user",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Successful Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/user",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "user"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"username\": \"<username>\",\n  \"first_name\": \"<first_name>\",\n  \"last_name\": \"<last_name>\",\n  \"email\": \"<email>\",\n  \"phone_number\": \"<phone_number>\",\n  \"vehicle_number\": \"<vehicle_number>\",\n  \"user_type\": \"<user_type>\",\n  \"photo\": \"<photo>\",\n  \"status\": \"<status>\",\n  \"created_at\": \"<created_at>\",\n  \"updated_at\": \"<updated_at>\"\n}"
+        },
+        {
+          "name": "Failed Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/user",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "user"
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An error occurred!\"\n}"
+        }
+      ]
+    }
+  ]
+}
