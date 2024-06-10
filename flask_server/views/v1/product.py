@@ -37,6 +37,7 @@ def categories_products(id=None):
         logger.error("Error occurred:", exc_info=True)
         return jsonify({'error': 'An internal error occurred'}), 500
 
+
 @app_views.route('/products/users', methods=['GET'], strict_slashes=False)
 @protected_route
 def users_products():
@@ -65,6 +66,7 @@ def users_products():
         db.session.rollback()
         logger.error("Error occurred:", exc_info=True)
         return jsonify({'error': 'An internal error occurred'}), 500
+
 
 @app_views.route('/product/<int:id>', methods=['PUT'], strict_slashes=False)
 @protected_route
@@ -226,6 +228,7 @@ def create_product():
         db.session.rollback()
         logger.error("Error occurred:", exc_info=True)
         return jsonify({'error': 'An internal error occurred'}), 500
+
 
 @app_views.route('/product/<int:id>', methods=['DELETE'], strict_slashes=False)
 @protected_route
