@@ -1,0 +1,431 @@
+{
+  "info": {
+    "name": "Manage payments",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/"
+  },
+  "item": [
+    {
+      "id": "16",
+      "name": "update payment",
+      "description": "This is an Item that updates a payment.",
+      "request": {
+        "description": "Update a payment.",
+        "url": "http://127.0.0.2:5000/api/v1/payment/<int:id>",
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "status",
+              "value": "<status>",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Successful Update",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "status",
+                  "value": "<status>",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/payment/<int:id>",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "payment",
+                "<int:id>"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Payment has been updated successfully\"\n}"
+        },
+        {
+          "name": "Failed Update",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "status",
+                  "value": "<status>",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/payment/<int:id>",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "payment",
+                "<int:id>"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "17",
+      "name": "create payment",
+      "description": "This is an Item that creates a payment.",
+      "request": {
+        "description": "Create a payment.",
+        "url": "http://127.0.0.2:5000/api/v1/payment",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "payment_method",
+              "value": "<payment_method>",
+              "type": "text"
+            },
+            {
+              "key": "seller_amount",
+              "value": "<seller_amount>",
+              "type": "text"
+            },
+            {
+              "key": "dispatcher_amount",
+              "value": "<dispatcher_amount>",
+              "type": "text"
+            },
+            {
+              "key": "currency",
+              "value": "<currency>",
+              "type": "text"
+            },
+            {
+              "key": "order_id",
+              "value": "<order_id>",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Successful Creation",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "payment_method",
+                  "value": "<payment_method>",
+                  "type": "text"
+                },
+                {
+                  "key": "seller_amount",
+                  "value": "<seller_amount>",
+                  "type": "text"
+                },
+                {
+                  "key": "dispatcher_amount",
+                  "value": "<dispatcher_amount>",
+                  "type": "text"
+                },
+                {
+                  "key": "currency",
+                  "value": "<currency>",
+                  "type": "text"
+                },
+                {
+                  "key": "order_id",
+                  "value": "<order_id>",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/payment",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "payment"
+              ]
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Payment has been created successfully\"\n}"
+        },
+        {
+          "name": "Failed Creation",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "payment_method",
+                  "value": "<payment_method>",
+                  "type": "text"
+                },
+                {
+                  "key": "seller_amount",
+                  "value": "<seller_amount>",
+                  "type": "text"
+                },
+                {
+                  "key": "dispatcher_amount",
+                  "value": "<dispatcher_amount>",
+                  "type": "text"
+                },
+                {
+                  "key": "currency",
+                  "value": "<currency>",
+                  "type": "text"
+                },
+                {
+                  "key": "order_id",
+                  "value": "<order_id>",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/payment",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "payment"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "18",
+      "name": "get my payments",
+      "description": "This is an Item that retrieves payments based on the order ID.",
+      "request": {
+        "description": "Retrieve payments for a specific order.",
+        "url": "http://127.0.0.2:5000/api/v1/payments/{{order_id}}",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Successful Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/payments/{{order_id}}",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "{{order_id}}"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  {\n    \"Id\": <payment_id>,\n    \"Currency\": <currency>,\n    \"Payment_method\": <payment_method>,\n    \"Payment_status\": <payment_status>,\n    \"Date\": <last_update_time>,\n    \"Amount\": <amount>\n  }\n]"
+        },
+        {
+          "name": "Failed Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/payments/{{order_id}}",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "{{order_id}}"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred\"\n}"
+        }
+      ]
+    }
+  ]
+}
