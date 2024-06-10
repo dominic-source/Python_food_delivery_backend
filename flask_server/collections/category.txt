@@ -1,0 +1,421 @@
+{
+  "info": {
+    "name": "Manage Categories",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/"
+  },
+  "item": [
+    {
+      "id": "19",
+      "name": "get category",
+      "description": "This is an Item that retrieves a category based on its ID.",
+      "request": {
+        "description": "Retrieve a specific category.",
+        "url": "http://127.0.0.2:5000/api/v1/category/{{id}}",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Successful Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/category/{{id}}",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "category",
+                "{{id}}"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"name\": <category_name>,\n  \"id\": <category_id>\n}"
+        },
+        {
+          "name": "Failed Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/category/{{id}}",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "category",
+                "{{id}}"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "20",
+      "name": "get all categories",
+      "description": "This is an Item that retrieves all categories.",
+      "request": {
+        "description": "Retrieve all categories.",
+        "url": "http://127.0.0.2:5000/api/v1/categories",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Successful Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/categories",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "categories"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  {\n    \"id\": <category_id>,\n    \"name\": <category_name>\n  },\n  ...\n]"
+        },
+        {
+          "name": "Failed Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/categories",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "categories"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "21",
+      "name": "create category",
+      "description": "This is an Item that creates a new category.",
+      "request": {
+        "description": "Create a new category.",
+        "url": "http://127.0.0.2:5000/api/v1/category",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "name",
+              "value": "<category_name>",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Successful Creation",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/category",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "category"
+              ]
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"name\": <category_name>,\n  \"id\": <category_id>\n}"
+        },
+        {
+          "name": "Failed Creation",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/category",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "category"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "22",
+      "name": "delete category",
+      "description": "This is an Item that deletes a category.",
+      "request": {
+        "description": "Delete a category.",
+        "url": "http://127.0.0.2:5000/api/v1/category/<category_id>",
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Successful Deletion",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/category/<category_id>",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "category",
+                "<category_id>"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Category deleted successfully\"\n}"
+        },
+        {
+          "name": "Failed Deletion",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/category/<category_id>",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "category",
+                "<category_id>"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred\"\n}"
+        }
+      ]
+    }
+  ]
+}
