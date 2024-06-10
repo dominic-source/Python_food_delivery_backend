@@ -9,6 +9,7 @@ import datetime
 from sqlalchemy.orm.exc import NoResultFound
 from typing import Optional, Tuple
 
+
 @app_views.route('/order/<int:order_id>', methods=['PUT'], strict_slashes=False)
 @protected_route
 def update_order_items(order_id: Optional[int] = None) -> Tuple[dict, int]:
@@ -225,6 +226,7 @@ def update_order_address() -> Tuple[dict, int]:
         db.session.rollback()
         logger.error("Error occurred:", exc_info=True)
         return jsonify({'error': 'An internal error occurred'}), 500
+
 
 @app_views.route('/order_items/<id>', methods=['GET'], strict_slashes=False)
 @protected_route
