@@ -784,6 +784,6 @@
           "body": "{\n  \"error\": \"An internal error occurred\"\n}"
         }
       ]
-    },
+    }
  ]
 }
