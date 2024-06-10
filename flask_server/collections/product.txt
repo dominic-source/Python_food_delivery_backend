@@ -1,0 +1,789 @@
+{
+  "info": {
+    "name": "Manage products",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/"
+  },
+  "item": [
+    {
+      "id": "9",
+      "name": "delete product",
+      "description": "This is an Item that deletes a product.",
+      "request": {
+        "description": "Delete a product.",
+        "url": "http://127.0.0.2:5000/api/v1/product/<int:id>",
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Successful Deletion",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/product/<int:id>",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "product",
+                "<int:id>"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"success\": \"Product deleted successfully\"\n}"
+        },
+        {
+          "name": "Failed Deletion",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/product/<int:id>",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "product",
+                "<int:id>"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "10",
+      "name": "create product",
+      "description": "This is an Item that creates a product.",
+      "request": {
+        "description": "Create a product.",
+        "url": "http://127.0.0.2:5000/api/v1/product",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "name",
+              "value": "<name>",
+              "type": "text"
+            },
+            {
+              "key": "description",
+              "value": "<description>",
+              "type": "text"
+            },
+            {
+              "key": "price",
+              "value": "<price>",
+              "type": "text"
+            },
+            {
+              "key": "currency",
+              "value": "<currency>",
+              "type": "text"
+            },
+            {
+              "key": "category_id",
+              "value": "<category_id>",
+              "type": "text"
+            },
+            {
+              "key": "quantity",
+              "value": "<quantity>",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Successful Creation",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/product",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "product"
+              ]
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"id\": <id>,\n  \"name\": \"<name>\",\n  \"username\": \"<username>\"\n}"
+        },
+        {
+          "name": "Failed Creation",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/product",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "product"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "11",
+      "name": "get product",
+      "description": "This is an Item that retrieves a product by its ID.",
+      "request": {
+        "description": "Retrieve a product.",
+        "url": "http://127.0.0.2:5000/api/v1/product/<int:id>",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Successful Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/product/<int:id>",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "product",
+                "<int:id>"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"id\": <id>,\n  \"name\": \"<name>\",\n  \"quantity\": <quantity>,\n  \"price\": <price>\n}"
+        },
+        {
+          "name": "Failed Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/product/<int:id>",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "product",
+                "<int:id>"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "12",
+      "name": "get all products",
+      "description": "This is an Item that retrieves all products.",
+      "request": {
+        "description": "Retrieve all products.",
+        "url": "http://127.0.0.2:5000/api/v1/products",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Successful Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/products",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  {\n    \"id\": <id>,\n    \"name\": \"<name>\",\n    \"quantity\": <quantity>,\n    \"price\": <price>\n  },\n  ...\n]"
+        },
+        {
+          "name": "Failed Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/products",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "13",
+      "name": "update product",
+      "description": "This is an Item that updates a product by its ID.",
+      "request": {
+        "description": "Update a product.",
+        "url": "http://127.0.0.2:5000/api/v1/product/<id>",
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "name",
+              "value": "<name>",
+              "type": "text"
+            },
+            {
+              "key": "description",
+              "value": "<description>",
+              "type": "text"
+            },
+            {
+              "key": "price",
+              "value": "<price>",
+              "type": "text"
+            },
+            {
+              "key": "currency",
+              "value": "<currency>",
+              "type": "text"
+            },
+            {
+              "key": "category_id",
+              "value": "<category_id>",
+              "type": "text"
+            },
+            {
+              "key": "quantity",
+              "value": "<quantity>",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Successful Update",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/product/<id>",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "product",
+                "<id>"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"id\": <id>,\n  \"name\": \"<name>\",\n  \"quantity\": <quantity>,\n  \"price\": <price>,\n  \"updated_at\": \"<updated_at>\",\n  \"created_at\": \"<created_at>\",\n  \"currency\": \"<currency>\"\n}"
+        },
+        {
+          "name": "Failed Update",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/product/<id>",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "product",
+                "<id>"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "14",
+      "name": "get user's products",
+      "description": "This is an Item that retrieves all products associated with the current user.",
+      "request": {
+        "description": "Get all products of a user.",
+        "url": "http://127.0.0.2:5000/api/v1/products/users",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Successful Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/products/users",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "users"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  {\n    \"id\": <id>,\n    \"name\": \"<name>\",\n    \"quantity\": <quantity>,\n    \"price\": <price>\n  },\n  ...\n]"
+        },
+        {
+          "name": "Failed Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/products/users",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "users"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "15",
+      "name": "get category's products",
+      "description": "This is an Item that retrieves all unique product names in a specific category.",
+      "request": {
+        "description": "Get all products of a category.",
+        "url": "http://127.0.0.2:5000/api/v1/products/categories/<int:id>",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Successful Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/products/categories/<int:id>",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "categories",
+                "<int:id>"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  {\n    \"name\": \"<name>\"\n  },\n  ...\n]"
+        },
+        {
+          "name": "Failed Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/products/categories/<int:id>",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "categories",
+                "<int:id>"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred\"\n}"
+        }
+      ]
+    },
+ ]
+}
