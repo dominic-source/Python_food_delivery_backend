@@ -57,6 +57,7 @@ def update_payment(id=None):
         logger.error("Error occurred:", exc_info=True)
         return jsonify({'error': 'An internal error occurred'}), 500
 
+
 @app_views.route('/payment', methods=['POST'], strict_slashes=False)
 @protected_route
 def create_payment():
