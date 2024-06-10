@@ -1,0 +1,906 @@
+{
+  "info": {
+    "name": "Manage Categories",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/"
+  },
+  "item": [
+    {
+      "id": "23",
+      "name": "update order items",
+      "description": "This is an Item that updates order items.",
+      "request": {
+        "description": "Update order items.",
+        "url": "http://127.0.0.2:5000/api/v1/order/<order_id>",
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"orderitems\": [\n    {\n      \"id\": <order_item_id>,\n      \"quantity\": <quantity>\n    }\n  ]\n}"
+        }
+      },
+      "response": [
+        {
+          "name": "Successful Update",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/order/<order_id>",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "order",
+                "<order_id>"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Order item was updated successfully\"\n}"
+        },
+        {
+          "name": "Failed Update",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/order/<order_id>",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "order",
+                "<order_id>"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "24",
+      "name": "delete an order item",
+      "description": "This is an Item that deletes an order item from an order.",
+      "request": {
+        "description": "Delete an order item.",
+        "url": "http://127.0.0.2:5000/api/v1/order/<order_id>/<orderitem_id>",
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Successful Deletion",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/order/<order_id>/<orderitem_id>",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "order",
+                "<order_id>",
+                "<orderitem_id>"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Order item was deleted successfully\"\n}"
+        },
+        {
+          "name": "Failed Deletion",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/order/<order_id>/<orderitem_id>",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "order",
+                "<order_id>",
+                "<orderitem_id>"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "25",
+      "name": "delete an order",
+      "description": "This is an Item that deletes an order.",
+      "request": {
+        "description": "Delete an order.",
+        "url": "http://127.0.0.2:5000/api/v1/order/<order_id>",
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Successful Deletion",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/order/<order_id>",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "order",
+                "<order_id>"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Order was deleted successfully\"\n}"
+        },
+        {
+          "name": "Failed Deletion",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/order/<order_id>",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "order",
+                "<order_id>"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "26",
+      "name": "update an order's address",
+      "description": "This is an Item that updates an order's address.",
+      "request": {
+        "description": "Update an order's address.",
+        "url": "http://127.0.0.2:5000/api/v1/order",
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "order_id",
+              "value": "<order_id>",
+              "type": "text"
+            },
+            {
+              "key": "delivery_address",
+              "value": "<delivery_address>",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Successful Update",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "order_id",
+                  "value": "<order_id>",
+                  "type": "text"
+                },
+                {
+                  "key": "delivery_address",
+                  "value": "<delivery_address>",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/order",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "order"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Order updated successfully\"\n}"
+        },
+        {
+          "name": "Failed Update",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "order_id",
+                  "value": "<order_id>",
+                  "type": "text"
+                },
+                {
+                  "key": "delivery_address",
+                  "value": "<delivery_address>",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/order",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "order"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "27",
+      "name": "Get all items of an order",
+      "description": "This is an Item that retrieves all the items associated with an order.",
+      "request": {
+        "description": "Get all items of an order.",
+        "url": "http://127.0.0.2:5000/api/v1/order_items/{{id}}",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Successful Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/order_items/{{id}}",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "order_items",
+                "{{id}}"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  {\n    \"id\": \"<order_id>\",\n    \"product_id\": \"<product_id>\",\n    \"quantity\": \"<quantity>\"\n  }\n]"
+        },
+        {
+          "name": "Failed Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/order_items/{{id}}",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "order_items",
+                "{{id}}"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred!\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "28",
+      "name": "Get all orders",
+      "description": "This is an Item that retrieves all orders. It is accessible only to admins.",
+      "request": {
+        "description": "Get all orders.",
+        "url": "http://127.0.0.2:5000/api/v1/all_orders",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Successful Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/all_orders",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "all_orders"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  {\n    \"order_id\": \"<order_id>\",\n    \"order_details\": \"<order_details>\"\n  }\n]"
+        },
+        {
+          "name": "Failed Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/all_orders",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "all_orders"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred!\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "29",
+      "name": "Get my orders",
+      "description": "This is an Item that retrieves all the user's orders as a buyer, seller, and/or dispatcher.",
+      "request": {
+        "description": "Get my orders.",
+        "url": "http://127.0.0.2:5000/api/v1/my_orders?seller={{seller}}&buyer={{buyer}}&dispatcher={{dispatcher}}",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Successful Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/my_orders?seller={{seller}}&buyer={{buyer}}&dispatcher={{dispatcher}}",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "my_orders"
+              ],
+              "query": [
+                {
+                  "key": "seller",
+                  "value": "{{seller}}"
+                },
+                {
+                  "key": "buyer",
+                  "value": "{{buyer}}"
+                },
+                {
+                  "key": "dispatcher",
+                  "value": "{{dispatcher}}"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"buyer\": [<order_details>],\n  \"seller\": [<order_details>],\n  \"dispatcher\": [<order_details>]\n}"
+        },
+        {
+          "name": "Failed Retrieval",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/my_orders?seller={{seller}}&buyer={{buyer}}&dispatcher={{dispatcher}}",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "my_orders"
+              ],
+              "query": [
+                {
+                  "key": "seller",
+                  "value": "{{seller}}"
+                },
+                {
+                  "key": "buyer",
+                  "value": "{{buyer}}"
+                },
+                {
+                  "key": "dispatcher",
+                  "value": "{{dispatcher}}"
+                }
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred!\"\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "30",
+      "name": "Create Order",
+      "description": "This is an Item that creates a new order.",
+      "request": {
+        "description": "Create a new order.",
+        "url": "http://127.0.0.2:5000/api/v1/order",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "<cookie>",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"seller_id\": \"<seller_id>\",\n  \"dispatcher_id\": \"<dispatcher_id>\",\n  \"delivery_address\": \"<delivery_address>\",\n  \"orderitems\": [\n    {\n      \"product_id\": \"<product_id>\",\n      \"quantity\": <quantity>\n    }\n  ]\n}"
+        }
+      },
+      "response": [
+        {
+          "name": "Successful Creation",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"seller_id\": \"<seller_id>\",\n  \"dispatcher_id\": \"<dispatcher_id>\",\n  \"delivery_address\": \"<delivery_address>\",\n  \"orderitems\": [\n    {\n      \"product_id\": \"<product_id>\",\n      \"quantity\": <quantity>\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/order",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "order"
+              ]
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"order_id\": <order_id>\n}"
+        },
+        {
+          "name": "Failed Creation",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "<cookie>",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"seller_id\": \"<seller_id>\",\n  \"dispatcher_id\": \"<dispatcher_id>\",\n  \"delivery_address\": \"<delivery_address>\",\n  \"orderitems\": [\n    {\n      \"product_id\": \"<product_id>\",\n      \"quantity\": <quantity>\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "http://127.0.0.2:5000/api/v1/order",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "2"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "order"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"An internal error occurred!\"\n}"
+        }
+      ]
+    }
+  ]
+}
