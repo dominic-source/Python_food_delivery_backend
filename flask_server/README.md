@@ -6,6 +6,7 @@ This is a delivery application that connects buyers, sellers, and dispatchers. I
 
 - **User Authentication:** Secure login and registration for users.
 - **Category Management:** Create, retrieve, update, and delete product categories.
+- **Product Management:** Create, retrieve, update, delete, and manage products.
 - **Order Management:** Place, track, and manage orders.
 - **Payment Processing:** Handle payments, update payment status, and retrieve payment details.
 
@@ -19,7 +20,7 @@ This is a delivery application that connects buyers, sellers, and dispatchers. I
 2. Set up a virtual environment:
     - ensure you are in the root directory of this repository
     ```bash
-    python3 -m venv venv
+    python -m venv venv
     source venv/bin/activate
     ```
 3. Install dependencies:
@@ -65,25 +66,124 @@ This is a delivery application that connects buyers, sellers, and dispatchers. I
 
 ### User API Endpoints
 
-This module is used for user authentication and management. It includes the following functions:
+This module is used for user authentication and management. It includes the following endpoints:
 
-- **get_user():** GET /api/v1/user/<int:id>
-    - Retrieve the basic information of a user. Returns a JSON response containing the user's information and status code if the retrieval is successful, or an error message and status code if the retrieval fails.
-- **get_users():** GET /api/v1/users
-    - Retrieve all users of the software. Returns a JSON response containing a list of users and status code if the retrieval is successful, or an error message and status code if the retrieval fails.
-- **update_password():** PUT /api/v1/user/password/<int:id>
-    - Update a user's password. Returns a JSON response containing a success message and status code if the password update is successful, or an error message and status code if the password update fails.
-- **forgot_password():** POST /api/v1/user/password/forgot
-    - Generate a token for a user who forgot their password. Returns a JSON response containing a success message and status code if the token is generated successfully, or an error message and status code if the token generation fails.
-- **update_user():** PUT /api/v1/user/<int:id>
-    - Update a user's information. Returns a JSON response containing a success message and status code if the update is successful, or an error message and status code if the update fails.
-- **logout_user():** POST /api/v1/user/logout
-    - Log out a user. Returns a success message and status code if the logout is successful, or an error message and status code if the logout fails.
-- **login_user():** POST /api/v1/user/login
-    - Log in a user. Returns a success message and status code if the login is successful, or an error message and status code if the login fails.
-- **register():** POST /api/v1/user/register
-    - Register a new user. Returns a JSON response containing the new user's username, creation date, and ID, or an error message, and a status code.
+#### User Registration
 
+- **URL:** `/api/v1/user/register`
+- **Method:** `POST`
+- **Auth required:** No
+- **Data Params:**
+    - `username` (str): The desired username for the new user.
+    - `password` (str): The desired password for the new user.
+    - `email` (str): The email address of the new user.
+    - `first_name` (str): The first name of the new user.
+    - `last_name` (str): The last name of the new user.
+    - `phone_number` (str): The phone number of the new user.
+    - `role` (str): The role of the new user (e.g., 'buyer', 'seller', 'dispatcher').
+- **Success Response:** 
+    - `201 Created`:  `{"username": "username", "creation_date": "YYYY-MM-DD", "id": 123}`
+- **Error Response:**
+    - `400 Bad Request`:  `{"error": "Username already exists"}` or `{"error": "Invalid email format"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
+
+#### User Login
+
+- **URL:** `/api/v1/user/login`
+- **Method:** `POST`
+- **Auth required:** No
+- **Data Params:**
+    - `username` (str): The username of the user.
+    - `password` (str): The password of the user.
+- **Success Response:**
+    - `200 OK`:  `{"message": "Login successful", "token": "your_access_token"}`
+- **Error Response:**
+    - `401 Unauthorized`:  `{"error": "Invalid credentials"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
+
+#### User Logout
+
+- **URL:** `/api/v1/user/logout`
+- **Method:** `POST`
+- **Auth required:** Yes
+- **Data Params:** None
+- **Success Response:**
+    - `200 OK`:  `{"message": "Logout successful"}`
+- **Error Response:**
+    - `401 Unauthorized`:  `{"error": "Unauthorized"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
+
+#### Get User
+
+- **URL:** `/api/v1/user/<int:id>`
+- **Method:** `GET`
+- **Auth required:** Yes
+- **Data Params:** None
+- **Success Response:**
+    - `200 OK`:  `{"id": 123, "username": "username", "email": "email@example.com", "first_name": "First", "last_name": "Last", "phone_number": "1234567890", "role": "buyer", "creation_date": "YYYY-MM-DD"}`
+- **Error Response:**
+    - `401 Unauthorized`:  `{"error": "Unauthorized"}`
+    - `404 Not Found`:  `{"error": "User not found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
+
+#### Get All Users
+
+- **URL:** `/api/v1/users`
+- **Method:** `GET`
+- **Auth required:** Yes
+- **Data Params:** None
+- **Success Response:**
+    - `200 OK`:  `[{"id": 123, "username": "username", "email": "email@example.com", "first_name": "First", "last_name": "Last", "phone_number": "1234567890", "role": "buyer", "creation_date": "YYYY-MM-DD"}, ...]`
+- **Error Response:**
+    - `401 Unauthorized`:  `{"error": "Unauthorized"}`
+    - `404 Not Found`:  `{"error": "No users found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
+
+#### Update User
+
+- **URL:** `/api/v1/user/<int:id>`
+- **Method:** `PUT`
+- **Auth required:** Yes
+- **Data Params:**
+    - `email` (str): The updated email address.
+    - `first_name` (str): The updated first name.
+    - `last_name` (str): The updated last name.
+    - `phone_number` (str): The updated phone number.
+- **Success Response:**
+    - `200 OK`:  `{"message": "User updated successfully"}`
+- **Error Response:**
+    - `401 Unauthorized`:  `{"error": "Unauthorized"}`
+    - `404 Not Found`:  `{"error": "User not found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
+
+#### Update User Password
+
+- **URL:** `/api/v1/user/password/<int:id>`
+- **Method:** `PUT`
+- **Auth required:** Yes
+- **Data Params:**
+    - `old_password` (str): The user's current password.
+    - `new_password` (str): The new password.
+- **Success Response:**
+    - `200 OK`:  `{"message": "Password updated successfully"}`
+- **Error Response:**
+    - `401 Unauthorized`:  `{"error": "Unauthorized"}`
+    - `404 Not Found`:  `{"error": "User not found"}`
+    - `400 Bad Request`:  `{"error": "Incorrect old password"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
+
+#### Forgot Password
+
+- **URL:** `/api/v1/user/password/forgot`
+- **Method:** `POST`
+- **Auth required:** No
+- **Data Params:**
+    - `email` (str): The user's email address.
+- **Success Response:**
+    - `200 OK`:  `{"message": "Password reset email sent"}`
+- **Error Response:**
+    - `404 Not Found`:  `{"error": "User not found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
 
 ### Payment API Endpoints
 
@@ -91,7 +191,7 @@ This document describes the API endpoints available in the `payment.py` module.
 
 #### Update Payment
 
-- **URL:** `/payment/<int:id>`
+- **URL:** `/api/v1/payment/<int:id>`
 - **Method:** `PUT`
 - **Auth required:** Yes
 - **Arguments:** `id` (int) - The ID of the payment to update.
@@ -101,7 +201,7 @@ This document describes the API endpoints available in the `payment.py` module.
 
 #### Create Payment
 
-- **URL:** `/payment`
+- **URL:** `/api/v1/payment`
 - **Method:** `POST`
 - **Auth required:** Yes
 - **Data Params:** 
@@ -115,7 +215,7 @@ This document describes the API endpoints available in the `payment.py` module.
 
 #### Get Payments
 
-- **URL:** `/payments/<int:order_id>`
+- **URL:** `/api/v1/payments/<int:order_id>`
 - **Method:** `GET`
 - **Auth required:** Yes
 - **Arguments:** `order_id` (int) - The ID of the order to retrieve payments for.
@@ -126,110 +226,316 @@ This document describes the API endpoints available in the `payment.py` module.
 
 This module is used to manage the product. It provides several endpoints for creating, retrieving, updating, and deleting products.
 
+#### Get Products by Category
 
-#### GET /products/categories/<int:id>
+- **URL:** `/api/v1/products/categories/<int:id>`
+- **Method:** `GET`
+- **Auth required:** No
+- **Data Params:** None
+- **Success Response:**
+    - `200 OK`:  `[{"name": "Product Name 1"}, {"name": "Product Name 2"}, ...]`
+- **Error Response:**
+    - `400 Bad Request`:  `{"error": "Category ID is required"}`
+    - `404 Not Found`:  `{"error": "Category not found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
 
-This endpoint retrieves all unique product names in a specific category.
+#### Get Products by Category
 
-- **Parameters**: `id` (int) - The ID of the category.
-- **Returns**: A JSON response containing the product names or an error message, and a status code.
-- **Errors**: 400 (Bad Request) if the category ID is not provided, 404 (Not Found) if no products exist in the category, 500 (Internal Server Error) if an internal error occurs.
+- **URL:** `/api/v1/products/categories/<int:id>`
+- **Method:** `GET`
+- **Auth required:** Yes
+- **Data Params:** None
+- **Success Response:**
+    - `200 OK`:  `[{"name": "Product Name 1"}, {"name": "Product Name 2"}, ...]`
+- **Error Response:**
+    - `400 Bad Request`:  `{"error": "Category ID is required"}`
+    - `404 Not Found`:  `{"error": "Category not found"}` or `{"error": "No products found in this category"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
 
-#### GET /products/users
+#### Get Products by User
 
-This endpoint retrieves all products associated with the current user.
+- **URL:** `/api/v1/products/users`
+- **Method:** `GET`
+- **Auth required:** Yes
+- **Data Params:** None
+- **Success Response:**
+    - `200 OK`:  `[{"id": 123, "name": "Product Name", "description": "Product Description", "price": 100.00, "currency": "USD", "category_id": 456, "quantity": 10, "owner_username": "Seller Username", "creation_date": "YYYY-MM-DD", "last_update_time": "YYYY-MM-DD"}, ...]`
+- **Error Response:**
+    - `401 Unauthorized`:  `{"error": "Unauthorized"}`
+    - `404 Not Found`:  `{"error": "No products found for this user"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
 
-- **Returns**: A JSON response containing the product data or an error message, and a status code.
-- **Errors**: 404 (Not Found) if the user does not exist or has no products, 500 (Internal Server Error) if an internal error occurs.
+#### Update Product
 
-#### PUT /product/<int:id>
+- **URL:** `/api/v1/product/<int:id>`
+- **Method:** `PUT`
+- **Auth required:** Yes
+- **Data Params:**
+    - `name` (str, optional): The updated name of the product.
+    - `description` (str, optional): The updated description of the product.
+    - `price` (float, optional): The updated price of the product.
+    - `currency` (str, optional): The updated currency of the product.
+    - `category_id` (int, optional): The updated category ID of the product.
+    - `quantity` (int, optional): The updated quantity of the product.
+- **Success Response:**
+    - `200 OK`:  `{"message": "Product updated successfully"}`
+- **Error Response:**
+    - `400 Bad Request`:  `{"error": "Product ID is required"}`
+    - `401 Unauthorized`:  `{"error": "Unauthorized"}`
+    - `404 Not Found`:  `{"error": "Product not found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
 
-This endpoint updates a product by its ID.
+#### Get All Products
 
-- **Parameters**: `id` (int) - The ID of the product to update.
-- **Returns**: A JSON response containing the updated product data or an error message, and a status code.
-- **Errors**: 400 (Bad Request) if the product ID is not provided, 404 (Not Found) if the product does not exist, 500 (Internal Server Error) if an internal error occurs.
+- **URL:** `/api/v1/products`
+- **Method:** `GET`
+- **Auth required:** No
+- **Data Params:** None
+- **Success Response:**
+    - `200 OK`:  `[{"id": 123, "name": "Product Name", "description": "Product Description", "price": 100.00, "currency": "USD", "category_id": 456, "quantity": 10, "owner_username": "Seller Username", "creation_date": "YYYY-MM-DD", "last_update_time": "YYYY-MM-DD"}, ...]`
+- **Error Response:**
+    - `404 Not Found`:  `{"error": "No products found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
 
-#### GET /products
+#### Get Product
 
-This endpoint retrieves all products.
+- **URL:** `/api/v1/product/<int:id>`
+- **Method:** `GET`
+- **Auth required:** No
+- **Data Params:** None
+- **Success Response:**
+    - `200 OK`:  `{"id": 123, "name": "Product Name", "description": "Product Description", "price": 100.00, "currency": "USD", "category_id": 456, "quantity": 10, "owner_username": "Seller Username", "creation_date": "YYYY-MM-DD", "last_update_time": "YYYY-MM-DD"}`
+- **Error Response:**
+    - `400 Bad Request`:  `{"error": "Product ID is required"}`
+    - `404 Not Found`:  `{"error": "Product not found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
 
-- **Returns**: A JSON response containing the product data or an error message, and a status code.
-- **Errors**: 404 (Not Found) if no products exist, 500 (Internal Server Error) if an internal error occurs.
+#### Create Product
 
-#### GET /product/<int:id>
+- **URL:** `/api/v1/product`
+- **Method:** `POST`
+- **Auth required:** Yes
+- **Data Params:**
+    - `name` (str): The name of the product.
+    - `description` (str): The description of the product.
+    - `price` (float): The price of the product.
+    - `currency` (str): The currency of the product.
+    - `category_id` (int): The ID of the category the product belongs to.
+    - `quantity` (int): The quantity of the product.
+- **Success Response:**
+    - `201 Created`:  `{"id": 123, "name": "Product Name", "owner_username": "Seller Username"}`
+- **Error Response:**
+    - `400 Bad Request`:  `{"error": "Missing required parameters"}`
+    - `401 Unauthorized`:  `{"error": "Unauthorized"}`
+    - `404 Not Found`:  `{"error": "Category not found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
 
-This endpoint retrieves a product by its ID.
+#### Delete Product
 
-- **Parameters**: `id` (int) - The ID of the product to retrieve.
-- **Returns**: A JSON response containing the product data or an error message, and a status code.
-- **Errors**: 400 (Bad Request) if the product ID is not provided, 404 (Not Found) if the product does not exist, 500 (Internal Server Error) if an internal error occurs.
-
-#### POST /product
-
-This endpoint creates a product.
-
-- **Parameters**: `name` (str) - The name of the product, `description` (str) - The description of the product, `price` (float) - The price of the product, `currency` (str) - The currency of the product, `category_id` (int) - The ID of the category the product belongs to, `quantity` (int) - The quantity of the product.
-- **Returns**: A JSON response containing the product ID, name, and owner's username, or an error message, and a status code.
-- **Errors**: 401 (Unauthorized) if an error occurs during creation, 500 (Internal Server Error) if an internal error occurs.
-
-#### DELETE /product/<int:id>
-
-This endpoint deletes a product.
-
-- **Parameters**: `id` (int) - The ID of the product to delete.
-- **Returns**: A JSON response containing a success message or an error message, and a status code.
-- **Errors**: 401 (Unauthorized) if the product ID is not provided or the product does not exist, 500 (Internal Server Error) if an error occurs during deletion.
-
-
-
+- **URL:** `/api/v1/product/<int:id>`
+- **Method:** `DELETE`
+- **Auth required:** Yes
+- **Data Params:** None
+- **Success Response:**
+    - `200 OK`:  `{"message": "Product deleted successfully"}`
+- **Error Response:**
+    - `400 Bad Request`:  `{"error": "Product ID is required"}`
+    - `401 Unauthorized`:  `{"error": "Unauthorized"}`
+    - `404 Not Found`:  `{"error": "Product not found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
 
 ### Category API Endpoints
 
 This module is used to manage categories in the application. It provides endpoints for creating, deleting, retrieving a single category, and retrieving all categories.
 
+#### Delete Category
 
-#### DELETE /category/<int:id>
+- **URL:** `/api/v1/category/<int:id>`
+- **Method:** `DELETE`
+- **Auth required:** Yes (Admin)
+- **Data Params:** None
+- **Success Response:**
+    - `200 OK`:  `{"message": "Category deleted successfully"}`
+- **Error Response:**
+    - `400 Bad Request`:  `{"error": "Category ID is required"}`
+    - `404 Not Found`:  `{"error": "Category not found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
 
-This endpoint deletes a category.
+#### Create Category
 
-- **Parameters**: `id` (int) - The ID of the category to delete.
-- **Returns**: A JSON response containing a success message or an error message, and a status code.
-- **Errors**: 
-  - 400 (Bad Request) if the category ID is not provided,
-  - 404 (Not Found) if the category does not exist,
-  - 500 (Internal Server Error) if an error occurs during deletion.
+- **URL:** `/api/v1/category`
+- **Method:** `POST`
+- **Auth required:** Yes (Admin)
+- **Data Params:**
+    - `name` (str): The name of the category to create.
+- **Success Response:**
+    - `201 Created`:  `{"name": "Category Name", "id": 123}`
+- **Error Response:**
+    - `400 Bad Request`:  `{"error": "Category name must be provided"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
 
-#### POST /category
+#### Get All Categories
 
-This endpoint creates a category.
+- **URL:** `/api/v1/categories`
+- **Method:** `GET`
+- **Auth required:** Yes
+- **Data Params:** None
+- **Success Response:**
+    - `200 OK`:  `[{"id": 123, "name": "Category Name"}, ...]`
+- **Error Response:**
+    - `404 Not Found`:  `{"error": "No categories found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
 
-- **Parameters**: `name` (str) - The name of the category to create.
-- **Returns**: A JSON response containing the name and ID of the created category, or an error message, and a status code.
-- **Errors**: 
-  - 400 (Bad Request) if the category name is not provided,
-  - 500 (Internal Server Error) if an error occurs during creation.
+#### Get Category
 
-#### GET /categories
+- **URL:** `/api/v1/category/<int:id>`
+- **Method:** `GET`
+- **Auth required:** Yes
+- **Data Params:** None
+- **Success Response:**
+    - `200 OK`:  `{"id": 123, "name": "Category Name"}`
+- **Error Response:**
+    - `400 Bad Request`:  `{"error": "Category ID is required"}`
+    - `404 Not Found`:  `{"error": "Category not found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
 
-This endpoint retrieves all categories.
 
-- **Returns**: A JSON response containing a list of categories or an error message, and a status code.
-- **Errors**: 
-  - 404 (Not Found) if no categories exist,
-  - 500 (Internal Server Error) if an error occurs during retrieval.
+### Order API Endpoints
 
-#### GET /category/<int:id>
+This module is used to manage orders in the application. It provides endpoints for creating, retrieving, updating, and deleting orders.
 
-This endpoint retrieves a particular category by its ID.
+#### Create Order
 
-- **Parameters**: `id` (int) - The ID of the category to retrieve.
-- **Returns**: A JSON response containing the category data or an error message, and a status code.
-- **Errors**: 
-  - 400 (Bad Request) if the category ID is not provided,
-  - 404 (Not Found) if the category does not exist,
-  - 500 (Internal Server Error) if an error occurs during retrieval.
+- **URL:** `/api/v1/order`
+- **Method:** `POST`
+- **Auth required:** Yes
+- **Data Params:**
+    - `seller_id` (int): The ID of the seller fulfilling the order.
+    - `dispatcher_id` (int): The ID of the dispatcher assigned to the order.
+    - `delivery_address` (str): The delivery address of the order.
+    - `orderitems` (list): A list of dictionaries, each containing:
+        - `product_id` (int): The ID of the product being ordered.
+        - `quantity` (int): The quantity of the product being ordered.
+- **Success Response:** 
+    - `201 Created`:  `{"order_id": 123}`
+- **Error Response:**
+    - `401 Unauthorized`:  `{"error": "This route requires you use json"}` or `{"error": "Seller not found"}` or `{"error": "Dispatcher not found"}` or `{"error": "Product not found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred!"}`
 
+#### Get All Orders (Admin Only)
+
+- **URL:** `/api/v1/all_orders`
+- **Method:** `GET`
+- **Auth required:** Yes (Admin)
+- **Data Params:** None
+- **Success Response:**
+    - `200 OK`:  `[{"id": 123, "product_name": "Product Name", "buyer_username": "Buyer Username", "seller_username": "Seller Username", "dispatcher_username": "Dispatcher Username", "status": "pending", "total_amount": 100.00, "currency": "USD", "delivery_address": "123 Main St", "creation_date": "YYYY-MM-DD", "last_update_time": "YYYY-MM-DD"}, ...]`
+- **Error Response:**
+    - `401 Unauthorized`:  `{"error": "Unauthorized"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred!"}`
+
+#### Get My Orders
+
+- **URL:** `/api/v1/my_orders`
+- **Method:** `GET`
+- **Auth required:** Yes
+- **Data Params:**
+    - `seller` (str, optional): If 'true', returns orders where the user is the seller.
+    - `buyer` (str, optional): If 'true', returns orders where the user is the buyer.
+    - `dispatcher` (str, optional): If 'true', returns orders where the user is the dispatcher.
+- **Success Response:**
+    - `200 OK`:  `{"buyer": [{"id": 123, "product_name": "Product Name", "buyer_username": "Buyer Username", "seller_username": "Seller Username", "dispatcher_username": "Dispatcher Username", "status": "pending", "total_amount": 100.00, "currency": "USD", "delivery_address": "123 Main St", "creation_date": "YYYY-MM-DD", "last_update_time": "YYYY-MM-DD"}, ...], "seller": [...], "dispatcher": [...]}`
+- **Error Response:**
+    - `401 Unauthorized`:  `{"error": "Unauthorized"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred!"}`
+
+#### Get Order Items
+
+- **URL:** `/api/v1/order_items/<id>`
+- **Method:** `GET`
+- **Auth required:** Yes (Buyer, Seller, or Dispatcher)
+- **Data Params:** None
+- **Success Response:**
+    - `200 OK`:  `[{"id": 123, "product_id": 456, "quantity": 2}, ...]`
+- **Error Response:**
+    - `400 Bad Request`:  `{"error": "Valid order ID is required"}`
+    - `404 Not Found`:  `{"error": "Order not found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred!"}`
+
+#### Get Order
+
+- **URL:** `/api/v1/order/<int:id>`
+- **Method:** `GET`
+- **Auth required:** Yes (Buyer, Seller, or Dispatcher)
+- **Data Params:** None
+- **Success Response:**
+    - `200 OK`:  `{"id": 123, "product_name": "Product Name", "buyer_username": "Buyer Username", "seller_username": "Seller Username", "dispatcher_username": "Dispatcher Username", "status": "pending", "total_amount": 100.00, "currency": "USD", "delivery_address": "123 Main St", "creation_date": "YYYY-MM-DD", "last_update_time": "YYYY-MM-DD"}`
+- **Error Response:**
+    - `401 Unauthorized`:  `{"error": "Unauthorized"}`
+    - `404 Not Found`:  `{"error": "Order not found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred!"}`
+
+#### Update Order Items
+
+- **URL:** `/api/v1/order/<int:order_id>`
+- **Method:** `PUT`
+- **Auth required:** Yes (Buyer or Seller)
+- **Data Params:**
+    - `orderitems` (list): A list of dictionaries, each containing:
+        - `id` (int): The ID of the order item.
+        - `quantity` (int): The new quantity of the order item.
+- **Success Response:**
+    - `200 OK`:  `{"message": "Order item was updated successfully"}`
+- **Error Response:**
+    - `400 Bad Request`:  `{"error": "Order ID is required"}` or `{"error": "This route requires JSON input"}` or `{"error": "Order item not found"}` or `{"error": "Order item does not belong to this order"}`
+    - `403 Forbidden`:  `{"error": "Unauthorized transaction"}` or `{"error": "Order has already been paid"}`
+    - `404 Not Found`:  `{"error": "Order not found"}`
+    - `415 Unsupported Media Type`:  `{"error": "This route requires JSON input"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
+
+#### Update Order Address
+
+- **URL:** `/api/v1/order`
+- **Method:** `PUT`
+- **Auth required:** Yes (Buyer)
+- **Data Params:**
+    - `order_id` (int): The ID of the order to update.
+    - `delivery_address` (str, optional): The new delivery address of the order.
+- **Success Response:**
+    - `200 OK`:  `{"message": "Order updated successfully"}`
+- **Error Response:**
+    - `400 Bad Request`:  `{"error": "Valid order ID is required"}`
+    - `403 Forbidden`:  `{"error": "Unauthorized transaction"}`
+    - `404 Not Found`:  `{"error": "Order not found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
+
+#### Delete Order Item
+
+- **URL:** `/api/v1/order/<int:order_id>/<int:orderitem_id>`
+- **Method:** `DELETE`
+- **Auth required:** Yes (Buyer or Seller)
+- **Data Params:** None
+- **Success Response:**
+    - `200 OK`:  `{"message": "Order item was deleted successfully"}`
+- **Error Response:**
+    - `400 Bad Request`:  `{"error": "Order ID is required"}` or `{"error": "Order item ID is required"}` or `{"error": "Order item does not belong to this order"}`
+    - `403 Forbidden`:  `{"error": "Unauthorized transaction"}` or `{"error": "Order has already been paid"}` or `{"error": "Order is in process of payment"}`
+    - `404 Not Found`:  `{"error": "Order not found"}` or `{"error": "Order item not found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
+
+#### Delete Order
+
+- **URL:** `/api/v1/order/<int:order_id>`
+- **Method:** `DELETE`
+- **Auth required:** Yes (Buyer or Seller)
+- **Data Params:** None
+- **Success Response:**
+    - `200 OK`:  `{"message": "Order was deleted successfully"}`
+- **Error Response:**
+    - `400 Bad Request`:  `{"error": "Order ID is required"}`
+    - `403 Forbidden`:  `{"error": "Unauthorized transaction"}` or `{"error": "Order has already been paid"}` or `{"error": "Order is in process of payment"}`
+    - `404 Not Found`:  `{"error": "Order not found"}`
+    - `500 Internal Server Error`:  `{"error": "An internal error occurred"}`
 
 ### Please consult [Postman collection][def] documentation for further information.
 
