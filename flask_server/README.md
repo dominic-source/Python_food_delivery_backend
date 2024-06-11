@@ -15,7 +15,6 @@ This is a delivery application that connects buyers, sellers, and dispatchers. I
 1. Clone the repository:
     ```bash
     git clone https://github.com/dominic-source/Home_Deliverer.git
-    cd delivery_app
     ```
 2. Set up a virtual environment:
     - ensure you are in the root directory of this repository
@@ -34,7 +33,7 @@ This is a delivery application that connects buyers, sellers, and dispatchers. I
         redis-cli PING
         ```
         It should output *PONG*
-    - Setup mysql server
+    - Setup mysql server and start the service
         ```bash
         sudo service mysql start
         ```
@@ -48,7 +47,22 @@ This is a delivery application that connects buyers, sellers, and dispatchers. I
         flask db migrate
         flask db upgrade
         ```
-5. Create a new terminal and run consumer.py
+5. create a .env file
+    ```bash
+    touch .env
+    ```
+    - paste the following content in the file
+    ```
+    SECRET_KEY=<paste your secret_key here>
+    PYTHONDONTWRITEBYTECODE=1
+    DELIVER_MYSQL_HOST=localhost
+    DELIVER_MYSQL_DB=<type database name here>
+    DELIVER_MYSQL_USER=<type database username here>
+    DELIVER_MYSQL_PWD=<type database password here>
+    DELIVER_MYSQL_PORT=<type port number here>
+    GTP=<type your google password herekey here>
+    ```
+6. Create a new terminal and run consumer.py
     ```bash
         python -m flask_server.consumer
     ```
@@ -60,7 +74,7 @@ This is a delivery application that connects buyers, sellers, and dispatchers. I
     python -m flask_server.app
     ```
 2. Access the application:
-    - Open your web browser and navigate to http://127.0.0.2:5000.
+    - Open your web browser and navigate to http://127.0.0.2:5000
 
 ## API Endpoints
 
