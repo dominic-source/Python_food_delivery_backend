@@ -29,7 +29,7 @@ async def main():
     while True:
         logging.info("Loop 1")
         # Block and pop a message from the queue
-        data = r.blpop('user_data_queue')
+        data = r.blpop('user_data_queue_python')
         data = data[1].decode('utf-8')
         if data:
             logging.info("Received task from queue")
