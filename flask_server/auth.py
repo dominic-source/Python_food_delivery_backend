@@ -115,7 +115,7 @@ class Auth:
                 "pas": None
             }
             data = json.dumps(user_data)
-            redis.rpush('user_data_queue', data)
+            redis.rpush('user_data_queue_python', data)
             return token
         except Exception:
             logger.error("Error occurred:", exc_info=True)
