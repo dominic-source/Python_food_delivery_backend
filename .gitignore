@@ -1,0 +1,6 @@
+node_modules
+.env
+.vscode
+.eslintrc.json
+database_mongo
+.pytest_cache
